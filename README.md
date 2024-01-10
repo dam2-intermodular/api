@@ -1,3 +1,13 @@
+## Development
+
+```
+docker compose up -d
+```
+
+```
+cp .env.example
+```
+
 ```
 bun install
 bun run dev
