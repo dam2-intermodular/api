@@ -17,17 +17,18 @@ async function bootstrapMongo() {
   }
 }
 
-function createApp(): HonoBase {
-  let app = new Hono();
-  return app;
-}
-
 function declareRoutes(app: HonoBase): HonoBase {
   return api(app);
 }
 
-await bootstrapMongo();
-const app = createApp();
-declareRoutes(app);
+export async function createApp(): Promise<HonoBase> {
+  await bootstrapMongo();
 
+  let app = new Hono();
+  declareRoutes(app);
+
+  return app;
+}
+
+const app = await createApp();
 export default app;

@@ -1,11 +1,21 @@
 import { Context } from "hono";
-import { ClientResponse, Response } from "hono/dist/types/client/types";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
 
-export default function (c: Context): object {
-  console.log(typeof c.json({}));
+export default {
+  validator: zValidator(
+    "json",
+    z.object({
+      body: z.object({
+        name: z.string().min(3).max(255),
+        email: z.string().email(),
+        password: z.string().min(6).max(255),
+      }),
+    })
+  ),
+  handler: function (c: Context): object {
+    const data = c.req.valid("json");
 
-  return c.json({
-    message: "User created",
-    body: c.body,
-  });
-}
+    return c.json(data);
+  },
+};

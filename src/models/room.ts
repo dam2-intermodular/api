@@ -1,0 +1,39 @@
+import { Schema, model } from "mongoose";
+
+const roomSchema = new Schema({
+  // _id: Schema.Types.ObjectId,
+
+  beds: {
+    type: Number,
+    required: true,
+  },
+  price_per_night: {
+    type: Number,
+    required: true,
+  },
+  image_base_64: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  services: {
+    type: Array,
+    required: true,
+  },
+
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: null,
+  },
+});
+
+const Room = model("Room", roomSchema);
+
+export { Room };

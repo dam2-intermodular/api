@@ -8,6 +8,6 @@ export default async function () {
   const database = Bun.env["MONGODB_DATABASE"] ?? "hotel";
 
   await mongoose.connect(
-    `mongodb://${user}:${password}@${host}:${port}/${database}?authSource=admin`
+    `mongodb+srv://${user}:${password}@${host}/${database}?authSource=admin`
   );
 }

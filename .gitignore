@@ -164,3 +164,4 @@ x64
 **/.verdaccio-db.json
 
 .env
+.env.development

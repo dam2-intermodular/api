@@ -2,18 +2,11 @@ import { Schema, model } from "mongoose";
 
 enum UserRole {
   ADMIN = "admin",
-  USER = "user",
+  CLIENT = "client",
 }
 
 const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  surname: {
-    type: String,
-    required: false,
-  },
+  // _id: Schema.Types.ObjectId,
   email: {
     type: String,
     required: true,
@@ -22,16 +15,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  dni: {
-    type: String,
-    required: true,
-  },
   role: {
     type: String,
     enum: Object.values(UserRole),
-    default: UserRole.USER,
+    default: UserRole.CLIENT,
   },
-  birthDate: Date,
+  client_data: {
+    type: Map,
+    of: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
