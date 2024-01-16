@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 
 const roomSchema = new Schema({
   // _id: Schema.Types.ObjectId,
+  room_number: {
+    type: Number,
+    required: true,
+  },
 
   beds: {
     type: Number,

@@ -72,6 +72,7 @@ async function createRooms() {
     ];
 
     const payload = {
+      room_number: index + 1,
       description: faker.lorem.paragraph(),
       beds: Math.floor(Math.random() * 4) + 1,
       price_per_night: Math.floor(Math.random() * 100) + 50,
@@ -119,7 +120,7 @@ async function createInvoices() {
     };
 
     await Invoice.create(payload);
-    console.log(`Invoice ${index + 1}/${10} created`);
+    console.log(`Invoice ${index + 1}/${INVOICE_COUNT} created`);
   }
 }
 
@@ -160,7 +161,7 @@ async function createBookings() {
     }
 
     await Booking.create(payload);
-    console.log(`Booking ${index + 1}/${10} created`);
+    console.log(`Booking ${index + 1}/${BOOKING_COUNT} created`);
   }
 }
 
