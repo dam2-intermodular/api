@@ -28,7 +28,7 @@ describe("users.create", () => {
     expect(response.status).toEqual(201);
 
     const data = (await response.json()).user;
-    const success = await User.findOne({ "_id": data._id }).exec();
+    const success = await User.findOne({ _id: data._id }).exec();
 
     expect(success?.email).toBe(data.email);
   });
