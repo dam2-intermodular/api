@@ -6,7 +6,6 @@ export default function (app: any) {
   app.get("/ping", ping.handler);
 
   app.post("/users", usersCreate.validator, usersCreate.handler);
-  app.get("/users/me", usersMe.middleware, usersMe.handler);
 
   return app;
 }
