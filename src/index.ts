@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import api from "./routes/api";
 import mongo from "./mongo";
 import { HonoBase } from "hono/hono-base";
-import { Error, MongooseError } from "mongoose";
 
 async function bootstrapMongo() {
   try {
