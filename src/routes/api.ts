@@ -1,5 +1,6 @@
 import ping from "../http/controllers/ping";
 import usersCreate from "./../http/controllers/users/create";
+import usersMe from "./../http/controllers/users/me";
 
 export default function (app: any) {
   app.get("/ping", ping.handler);
