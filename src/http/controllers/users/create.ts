@@ -18,20 +18,23 @@ export default {
     if (!(await isEmailUnique(body.email))) {
       return c.json(
         {
-          message: "El email ya existe en la base de datos"
+          message: "El email ya existe en la base de datos",
         },
-        400);
+        400
+      );
     }
+
+    const hashedPassword = await Bun.password.hash(body.password);
 
     const user = await User.create({
       name: body.name,
       email: body.email,
-      password: body.password
+      password: hashedPassword,
     });
 
     return c.json(
       {
-        user
+        user,
       },
       201
     );
@@ -42,3 +45,4 @@ async function isEmailUnique(email: string): Promise<boolean> {
   const result = await User.findOne({ email });
   return result === null;
 }
+
