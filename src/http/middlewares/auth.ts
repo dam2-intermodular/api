@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { getCookie, deleteCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 
 export default async function authMiddleware(c: Context, next: Function) {
@@ -16,6 +16,8 @@ export default async function authMiddleware(c: Context, next: Function) {
       c.set("user", payload);
       return await next();
     }
+
+    deleteCookie(c, "token");
   }
 
   return c.json(

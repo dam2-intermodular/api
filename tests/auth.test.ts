@@ -36,9 +36,12 @@ describe("auth", () => {
     });
     await meResponse.expectStatusToBe(200);
 
+    const createResponseJson = await createResponse.json();
+    delete createResponseJson.user.__v;
+    delete createResponseJson.user.password;
+    delete createResponseJson.user.updatedAt;
+
     // Expect the user data to be the same as the one created
-    expect((await meResponse.json()).user).toEqual(
-      (await createResponse.json()).user
-    );
+    expect((await meResponse.json()).user).toEqual(createResponseJson.user);
   });
 });

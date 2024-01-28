@@ -5,6 +5,18 @@ import { User } from "../../../models/user";
 import { setCookie } from "hono/cookie";
 import { sign } from "hono/jwt";
 
+type LoginResponseUser = {
+  _id: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+};
+type LoginResponse = {
+  user: LoginResponseUser;
+  token: string;
+};
+
 export default {
   validator: zValidator(
     "json",
@@ -14,6 +26,10 @@ export default {
     })
   ),
   handler: async function (c: Context): Promise<object> {
+    if (!Bun.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not set");
+    }
+
     const body = await c.req.json();
 
     const user = await User.findOne({
@@ -43,17 +59,31 @@ export default {
       );
     }
 
-    const userPayload = user.toJSON();
+    const userPayload = buildUserPayload(user);
 
-    const token = await sign(userPayload, "secret");
+    const token = await sign(userPayload, Bun.env.JWT_SECRET);
     setCookie(c, "token", token);
 
     return c.json(
       {
         user: userPayload,
         token,
-      },
+      } as LoginResponse,
       200
     );
   },
 };
+
+function buildUserPayload(user: any): LoginResponseUser {
+  const userJson = user.toJSON();
+
+  const userPayload = {
+    _id: userJson._id.toString(),
+    email: userJson.email,
+    role: userJson.role,
+    createdAt: userJson.createdAt?.toISOString(),
+    updatedAt: userJson.updatedAt?.toISOString(),
+  } as LoginResponseUser;
+
+  return userPayload;
+}
