@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import api from "./routes/api";
 import mongo from "./mongo";
 import { HonoBase } from "hono/hono-base";
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { swaggerUI } from "@hono/swagger-ui";
 
 async function bootstrapMongo() {
   try {
@@ -23,8 +25,23 @@ function declareRoutes(app: HonoBase): HonoBase {
 export async function createApp(): Promise<HonoBase> {
   await bootstrapMongo();
 
-  let app = new Hono();
+  let app = new OpenAPIHono();
   declareRoutes(app);
+
+  app.get(
+    "/docs",
+    swaggerUI({
+      url: "/doc",
+    })
+  );
+
+  app.doc("/doc", {
+    info: {
+      title: "An API",
+      version: "v1",
+    },
+    openapi: "3.1.0",
+  });
 
   return app;
 }
