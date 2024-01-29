@@ -4,14 +4,14 @@ import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
 
 export default function (app: any) {
-  app.get("/ping", ping.handler);
+  ping(app);
 
   // Users
-  app.post("/users", usersCreate.validator, usersCreate.handler);
+  usersCreate(app);
 
   // Auth
-  app.get("/me", authMe.middleware, authMe.handler);
-  app.post("/login", authLogin.validator, authLogin.handler);
+  authMe(app);
+  authLogin(app);
 
   return app;
 }
