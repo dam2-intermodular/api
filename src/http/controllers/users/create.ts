@@ -2,6 +2,8 @@ import { Context } from "hono";
 import { z } from "zod";
 import { User } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { UserResource, userSchema } from "../../../resources/user";
+import { createResourceFromDocument } from "../../../mongo";
 
 export default (app: OpenAPIHono) => {
   app.openapi(
@@ -14,6 +16,12 @@ export default (app: OpenAPIHono) => {
             "application/json": {
               schema: z.object({
                 name: z.string().min(3).max(255),
+                surname: z.string().min(3).max(255),
+                dni: z.string().min(9).max(9),
+                birthDate: z.string().openapi({
+                  format: "date",
+                }),
+
                 email: z.string().email(),
                 password: z.string().min(8).max(255),
               }),
@@ -27,10 +35,7 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                user: z.object({
-                  name: z.string(),
-                  email: z.string().email(),
-                }),
+                user: userSchema,
               }),
             },
           },
@@ -58,17 +63,32 @@ export default (app: OpenAPIHono) => {
         );
       }
 
+      const birthDate = Date.parse(body.birthDate);
+      if (isNaN(birthDate)) {
+        return c.json(
+          {
+            message: "La fecha de nacimiento no es válida",
+          },
+          400
+        );
+      }
+
       const hashedPassword = await Bun.password.hash(body.password);
 
       const user = await User.create({
-        name: body.name,
+        user_data: {
+          name: body.name,
+          surname: body.surname,
+          dni: body.dni,
+          birthDate,
+        },
         email: body.email,
         password: hashedPassword,
       });
 
       return c.json(
         {
-          user,
+          user: createResourceFromDocument(user, userSchema),
         },
         201
       );
