@@ -29,7 +29,7 @@ export async function createApp(): Promise<HonoBase> {
   declareRoutes(app);
 
   app.get(
-    "/ui",
+    "/docs",
     swaggerUI({
       url: "/doc",
     })
