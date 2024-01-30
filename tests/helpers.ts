@@ -44,5 +44,26 @@ export function request(app: HonoBase) {
         },
       };
     },
+    put: async (path: string, body: object, options = {}) => {
+      const response = await app.request(path, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        ...options,
+        body: JSON.stringify(body),
+      });
+
+      return {
+        status: response.status,
+        json: async () => {
+          return await response.json();
+        },
+        expectStatusToBe: async (status: number) => {
+          return expect(response.status).toBe(status);
+        },
+      };
+    },
   };
 }
