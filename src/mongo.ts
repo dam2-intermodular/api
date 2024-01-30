@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { z } from "@hono/zod-openapi";
-import { ZodObject } from "zod";
 
 export default async function () {
   const user = Bun.env["MONGODB_USERNAME"];
