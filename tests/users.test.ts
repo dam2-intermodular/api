@@ -54,3 +54,23 @@ describe("users.create", () => {
     expect(response2.status).toEqual(400);
   });
 });
+
+describe("users.list", () => {
+  test("should list users", async () => {
+    const app = await createApp();
+
+    await (
+      await request(app).post("/users", {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      })
+    ).expectStatusToBe(201);
+
+    const response = await request(app).get("/users");
+
+    expect(response.status).toEqual(200);
+
+    const data = (await response.json()).users;
+    expect(data.length).toBeGreaterThan(0);
+  });
+});
