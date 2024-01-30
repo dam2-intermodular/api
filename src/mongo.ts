@@ -25,8 +25,6 @@ export function createResourceFromDocument(
   const schemaKeys = Object.keys(schema.shape);
   const documentKeys = Object.keys(jsonDocument);
 
-  console.log(schemaKeys, documentKeys);
-
   const resource: any = {};
 
   documentKeys

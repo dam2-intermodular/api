@@ -2,7 +2,8 @@ import { Context } from "hono";
 import { z } from "zod";
 import { User } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { userSchema } from "../../../resources/user";
+import { UserResourceSchema } from "../../../resources/user";
+import { createResourceFromDocument } from "../../../mongo";
 
 export default (app: OpenAPIHono) => {
   app.openapi(
@@ -21,7 +22,7 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                users: z.array(userSchema),
+                users: z.array(UserResourceSchema),
               }),
             },
           },
@@ -38,7 +39,9 @@ export default (app: OpenAPIHono) => {
       const users = await User.find().skip(skip).limit(perPageParsed).exec();
 
       return c.json({
-        users,
+        users: users.map((user) =>
+          createResourceFromDocument(user, UserResourceSchema)
+        ),
       });
     }
   );

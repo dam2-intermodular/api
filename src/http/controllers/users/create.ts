@@ -1,8 +1,8 @@
 import { Context } from "hono";
 import { z } from "zod";
-import { User } from "../../../models/user";
+import { User, UserRole } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { UserResource, userSchema } from "../../../resources/user";
+import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
 
 export default (app: OpenAPIHono) => {
@@ -15,15 +15,10 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                name: z.string().min(3).max(255),
-                surname: z.string().min(3).max(255),
-                dni: z.string().min(9).max(9),
-                birthDate: z.string().openapi({
-                  format: "date",
-                }),
-
                 email: z.string().email(),
                 password: z.string().min(8).max(255),
+                user_data: z.any().optional().default({}),
+                role: z.string().optional().default(UserRole.CLIENT),
               }),
             },
           },
@@ -35,7 +30,7 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                user: userSchema,
+                user: UserResourceSchema,
               }),
             },
           },
@@ -57,17 +52,7 @@ export default (app: OpenAPIHono) => {
       if (!(await isEmailUnique(body.email))) {
         return c.json(
           {
-            message: "El email ya existe en la base de datos",
-          },
-          400
-        );
-      }
-
-      const birthDate = Date.parse(body.birthDate);
-      if (isNaN(birthDate)) {
-        return c.json(
-          {
-            message: "La fecha de nacimiento no es válida",
+            message: "Email already exists",
           },
           400
         );
@@ -76,19 +61,14 @@ export default (app: OpenAPIHono) => {
       const hashedPassword = await Bun.password.hash(body.password);
 
       const user = await User.create({
-        user_data: {
-          name: body.name,
-          surname: body.surname,
-          dni: body.dni,
-          birthDate,
-        },
+        user_data: body.user_data,
         email: body.email,
         password: hashedPassword,
       });
 
       return c.json(
         {
-          user: createResourceFromDocument(user, userSchema),
+          user: createResourceFromDocument(user, UserResourceSchema),
         },
         201
       );

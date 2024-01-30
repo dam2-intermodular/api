@@ -20,9 +20,11 @@ describe("users.create", () => {
     const app = await createApp();
 
     const response = await request(app).post("/users", {
-      name: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
+      user_data: {
+        name: faker.person.fullName(),
+      },
     });
 
     expect(response.status).toEqual(201);
@@ -38,7 +40,6 @@ describe("users.create", () => {
     const email = faker.internet.email();
 
     const response1 = await request(app).post("/users", {
-      name: faker.person.fullName(),
       email,
       password: faker.internet.password(),
     });
@@ -46,7 +47,6 @@ describe("users.create", () => {
     expect(response1.status).toEqual(201);
 
     const response2 = await request(app).post("/users", {
-      name: faker.person.fullName(),
       email,
       password: faker.internet.password(),
     });
