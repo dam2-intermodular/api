@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { z } from "@hono/zod-openapi";
 
 export default async function () {
   const user = Bun.env["MONGODB_USERNAME"];
@@ -13,4 +14,24 @@ export default async function () {
   await mongoose.connect(
     `${protocol}://${user}:${password}@${host}${portString}/${database}?authSource=admin`
   );
+}
+
+export function createResourceFromDocument(
+  document: mongoose.Document,
+  schema: z.ZodObject<any, any, any>
+): any {
+  const jsonDocument = document.toJSON();
+
+  const schemaKeys = Object.keys(schema.shape);
+  const documentKeys = Object.keys(jsonDocument);
+
+  const resource: any = {};
+
+  documentKeys
+    .filter((key) => schemaKeys.includes(key))
+    .forEach((key) => {
+      resource[key] = jsonDocument[key];
+    });
+
+  return resource;
 }

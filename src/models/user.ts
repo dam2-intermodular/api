@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-enum UserRole {
+export enum UserRole {
   ADMIN = "admin",
   CLIENT = "client",
 }
@@ -15,14 +15,14 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  user_data: {
+    type: Object,
+    default: {},
+  },
   role: {
     type: String,
     enum: Object.values(UserRole),
     default: UserRole.CLIENT,
-  },
-  client_data: {
-    type: Map,
-    of: String,
   },
   createdAt: {
     type: Date,
@@ -34,6 +34,4 @@ const userSchema = new Schema({
   },
 });
 
-const User = model("User", userSchema);
-
-export { User, UserRole };
+export const User = model("User", userSchema);
