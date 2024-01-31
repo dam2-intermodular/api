@@ -48,17 +48,22 @@ export default (app: OpenAPIHono) => {
         }),
         async function (c: Context): Promise<any> {
             const body = await c.req.json();
-            const hashedPassword = await Bun.password.hash(body.password);
-            if (body.password !== undefined && body.password !== null)
-                body.password = hashedPassword;
+            if (body.password === "")
+                return c.json(
+                    {
+                        message: "Password cannot be empty",
+                    },
+                    400
+                );
+
+            if (body.password !== undefined)
+                body.password = await Bun.password.hash(body.password);
 
             const user = await User.findOneAndUpdate(
                 {
                     id: c.req.param()
                 },
-                {
-                    body
-                },
+                body,
                 {
                     new: true
                 }

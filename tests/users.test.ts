@@ -79,6 +79,12 @@ describe("users.update", () => {
   test("should update user", async () => {
     const app = await createApp();
 
+    await request(app).post("/users", {
+      email: "luismi@gmail.es",
+      password: "321321321",
+      role: "client"
+    });
+
     await (
       await request(app).put("/users", {
         email: "luismi@gmail.es",
@@ -90,6 +96,6 @@ describe("users.update", () => {
           surname: "Palos",
           birthdate: "17/12/2001"
         }
-      })).expectStatusToBe(400);
+      })).expectStatusToBe(201);
   })
 });
