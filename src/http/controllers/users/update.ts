@@ -9,15 +9,15 @@ export default (app: OpenAPIHono) => {
     app.openapi(
         createRoute({
             method: "put",
-            path: "/users",
+            path: "/users/:id",
             request: {
                 body: {
                     content: {
                         "application/json": {
                             schema: z.object({
                                 password: z.string().min(8).max(255).optional(),
-                                user_data: z.any().optional().default({}),
-                                role: z.string().optional().default(UserRole.CLIENT),
+                                user_data: z.any().optional(),
+                                role: z.string().optional(),
                             })
                         }
                     }
@@ -49,15 +49,15 @@ export default (app: OpenAPIHono) => {
         async function (c: Context): Promise<any> {
             const body = await c.req.json();
             const hashedPassword = await Bun.password.hash(body.password);
+            if (body.password !== undefined && body.password !== null)
+                body.password = hashedPassword;
 
             const user = await User.findOneAndUpdate(
                 {
-                    email: body.email
+                    id: c.req.param()
                 },
                 {
-                    password: hashedPassword,
-                    role: body.role,
-                    user_data: body.user_data
+                    body
                 },
                 {
                     new: true
