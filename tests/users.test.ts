@@ -74,3 +74,33 @@ describe("users.list", () => {
     expect(data.length).toBeGreaterThan(0);
   });
 });
+
+describe("users.update", () => {
+  test("should update user", async () => {
+    const app = await createApp();
+
+    const user = (
+      await (
+        await request(app).post("/users", {
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+        })
+      ).json()
+    ).user;
+
+    await (
+      await request(app).put(`/users/${user._id}`, {
+        email: "luismi@gmail.es",
+        password: "123123123",
+        role: "admin",
+        user_data: {
+          dni: "12345678A",
+          name: "Luismi",
+          surname: "Palos",
+          birthdate: "17/12/2001",
+        },
+      })
+    ).expectStatusToBe(201);
+  });
+});
+
