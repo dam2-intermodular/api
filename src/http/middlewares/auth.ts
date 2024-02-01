@@ -7,7 +7,10 @@ export default async function authMiddleware(c: Context, next: Function) {
     throw new Error("JWT_SECRET is not set");
   }
 
-  const token = getCookie(c, "token");
+  let token = getCookie(c, "token");
+  if (!token) {
+    token = getTokenFromHeader(c);
+  }
 
   if (token) {
     const payload = await verify(token, Bun.env.JWT_SECRET);
@@ -26,4 +29,8 @@ export default async function authMiddleware(c: Context, next: Function) {
     },
     401
   );
+}
+
+function getTokenFromHeader(c: Context) {
+  return c.req.header("Authorization")?.split(" ")[1];
 }
