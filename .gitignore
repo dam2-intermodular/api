@@ -165,3 +165,4 @@ x64
 
 .env
 .env.development
+.env.local

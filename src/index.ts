@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import api from "./routes/api";
+import declareRoutes from "./routes/api";
 import mongo from "./mongo";
 import { HonoBase } from "hono/hono-base";
 import { OpenAPIHono } from "@hono/zod-openapi";
@@ -16,10 +16,6 @@ async function bootstrapMongo() {
       process.exit(1);
     }
   }
-}
-
-function declareRoutes(app: HonoBase): HonoBase {
-  return api(app);
 }
 
 export async function createApp(): Promise<HonoBase> {

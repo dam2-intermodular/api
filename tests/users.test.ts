@@ -79,14 +79,17 @@ describe("users.update", () => {
   test("should update user", async () => {
     const app = await createApp();
 
-    await request(app).post("/users", {
-      email: "luismi@gmail.es",
-      password: "321321321",
-      role: "client"
-    });
+    const user = (
+      await (
+        await request(app).post("/users", {
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+        })
+      ).json()
+    ).user;
 
     await (
-      await request(app).put("/users", {
+      await request(app).put(`/users/${user._id}`, {
         email: "luismi@gmail.es",
         password: "123123123",
         role: "admin",
@@ -94,8 +97,10 @@ describe("users.update", () => {
           dni: "12345678A",
           name: "Luismi",
           surname: "Palos",
-          birthdate: "17/12/2001"
-        }
-      })).expectStatusToBe(201);
-  })
+          birthdate: "17/12/2001",
+        },
+      })
+    ).expectStatusToBe(201);
+  });
 });
+
