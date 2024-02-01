@@ -48,16 +48,18 @@ export default (app: OpenAPIHono) => {
         }),
         async function (c: Context): Promise<any> {
             const body = await c.req.json();
-            if (body.password === "")
-                return c.json(
-                    {
-                        message: "Password cannot be empty",
-                    },
-                    400
-                );
 
-            if (body.password !== undefined)
+            if (body.password !== undefined) {
+                if (body.password === "")
+                    return c.json(
+                        {
+                            message: "Password cannot be empty",
+                        },
+                        400
+                    );
+
                 body.password = await Bun.password.hash(body.password);
+            }
 
             const user = await User.findOneAndUpdate(
                 {
@@ -69,8 +71,15 @@ export default (app: OpenAPIHono) => {
                 }
             );
 
+            if (!user)
+                return c.json({
+                    message: "User not found"
+                },
+                    404
+                );
+
             return c.json({
-                user: createResourceFromDocument(user!!, UserResourceSchema),
+                user: createResourceFromDocument(user, UserResourceSchema),
             },
                 201
             );
