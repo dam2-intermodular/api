@@ -1,17 +1,18 @@
 import { describe, test, expect } from "bun:test";
 import { createApp } from "../src/index";
 import { faker } from "@faker-js/faker";
-import { request } from "./helpers";
+import { getAdminBearerToken, request } from "./helpers";
+
+const app = await createApp();
+const adminToken = await getAdminBearerToken(app);
 
 describe("auth with cookies", () => {
   test("should not be able to get current user data if not logged", async () => {
-    const app = await createApp();
-
     const email = faker.internet.email();
     const password = faker.internet.password();
 
     // Create user
-    const createResponse = await request(app).post("/users", {
+    const createResponse = await request(app, adminToken).post("/users", {
       name: faker.person.fullName(),
       email,
       password,
@@ -48,13 +49,11 @@ describe("auth with cookies", () => {
 
 describe("auth with bearer", () => {
   test("should not be able to get current user data if not logged", async () => {
-    const app = await createApp();
-
     const email = faker.internet.email();
     const password = faker.internet.password();
 
     // Create user
-    const createResponse = await request(app).post("/users", {
+    const createResponse = await request(app, adminToken).post("/users", {
       name: faker.person.fullName(),
       email,
       password,

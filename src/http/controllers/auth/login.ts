@@ -53,7 +53,7 @@ export default (app: OpenAPIHono) => {
             },
           },
         },
-        401: {
+        422: {
           description: "Invalid email or password",
           content: {
             "application/json": {
@@ -81,7 +81,7 @@ export default (app: OpenAPIHono) => {
           {
             error: "Invalid email or password",
           },
-          401
+          422
         );
       }
 
@@ -95,7 +95,7 @@ export default (app: OpenAPIHono) => {
           {
             error: "Invalid email or password",
           },
-          401
+          422
         );
       }
 

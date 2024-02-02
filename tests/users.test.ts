@@ -1,14 +1,15 @@
 import { describe, test, expect } from "bun:test";
 import { createApp } from "../src/index";
 import { faker } from "@faker-js/faker";
-import { request } from "./helpers";
+import { getAdminBearerToken, request } from "./helpers";
 import { User } from "../src/models/user";
+
+const app = await createApp();
+const adminToken = await getAdminBearerToken(app);
 
 describe("users.create", () => {
   test("should fail validation if body is incomplete", async () => {
-    const app = await createApp();
-
-    const response = await request(app).post("/users", {
+    const response = await request(app, adminToken).post("/users", {
       name: "John Doe",
       // missing email and password
     });
@@ -17,9 +18,7 @@ describe("users.create", () => {
   });
 
   test("should create user", async () => {
-    const app = await createApp();
-
-    const response = await request(app).post("/users", {
+    const response = await request(app, adminToken).post("/users", {
       email: faker.internet.email(),
       password: faker.internet.password(),
       user_data: {
@@ -36,17 +35,16 @@ describe("users.create", () => {
   });
 
   test("should check that email doesn't exist", async () => {
-    const app = await createApp();
     const email = faker.internet.email();
 
-    const response1 = await request(app).post("/users", {
+    const response1 = await request(app, adminToken).post("/users", {
       email,
       password: faker.internet.password(),
     });
 
     expect(response1.status).toEqual(201);
 
-    const response2 = await request(app).post("/users", {
+    const response2 = await request(app, adminToken).post("/users", {
       email,
       password: faker.internet.password(),
     });
@@ -57,16 +55,14 @@ describe("users.create", () => {
 
 describe("users.list", () => {
   test("should list users", async () => {
-    const app = await createApp();
-
     await (
-      await request(app).post("/users", {
+      await request(app, adminToken).post("/users", {
         email: faker.internet.email(),
         password: faker.internet.password(),
       })
     ).expectStatusToBe(201);
 
-    const response = await request(app).get("/users");
+    const response = await request(app, adminToken).get("/users");
 
     expect(response.status).toEqual(200);
 
@@ -77,11 +73,9 @@ describe("users.list", () => {
 
 describe("users.update", () => {
   test("should update user", async () => {
-    const app = await createApp();
-
     const user = (
       await (
-        await request(app).post("/users", {
+        await request(app, adminToken).post("/users", {
           email: faker.internet.email(),
           password: faker.internet.password(),
         })
@@ -89,7 +83,7 @@ describe("users.update", () => {
     ).user;
 
     await (
-      await request(app).put(`/users/${user._id}`, {
+      await request(app, adminToken).put(`/users/${user._id}`, {
         email: "luismi@gmail.es",
         password: "123123123",
         role: "admin",
@@ -103,4 +97,3 @@ describe("users.update", () => {
     ).expectStatusToBe(201);
   });
 });
-

@@ -26,7 +26,7 @@ export default (app: OpenAPIHono) => {
       },
       responses: {
         201: {
-          description: "User created",
+          description: "User created successfully",
           content: {
             "application/json": {
               schema: z.object({
@@ -36,7 +36,7 @@ export default (app: OpenAPIHono) => {
           },
         },
         400: {
-          description: "Bad request",
+          description: "Email already exists",
           content: {
             "application/json": {
               schema: z.object({
@@ -49,7 +49,7 @@ export default (app: OpenAPIHono) => {
     }),
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
-      if (!(await isEmailUnique(body.email))) {
+      if (await isEmailUsed(body.email)) {
         return c.json(
           {
             message: "Email already exists",
@@ -76,7 +76,10 @@ export default (app: OpenAPIHono) => {
   );
 };
 
-async function isEmailUnique(email: string): Promise<boolean> {
-  const result = await User.findOne({ email });
-  return result === null;
+async function isEmailUsed(email: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    User.exists({ email }).then((exists) => {
+      resolve(exists !== null);
+    });
+  });
 }
