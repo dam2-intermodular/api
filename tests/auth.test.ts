@@ -87,3 +87,13 @@ describe("auth with bearer", () => {
     expect((await meResponse.json()).user).toEqual(createResponseJson.user);
   });
 });
+
+describe("auth register", () => {
+  test("should register user successfully", async () => {
+    const email = faker.internet.email;
+    const password = faker.internet.password;
+    const name = faker.person.firstName;
+    const surname = faker.person.lastName;
+    const dni = "12345678A";
+  })
+});

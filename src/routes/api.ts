@@ -4,6 +4,7 @@ import usersList from "./../http/controllers/users/list";
 import userUpdate from "./../http/controllers/users/update";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
+import authRegister from "./../http/controllers/auth/register";
 import authMiddleware from "../http/middlewares/auth";
 import adminMiddleware from "../http/middlewares/admin";
 
@@ -20,6 +21,7 @@ export default function (app: any) {
   // Auth
   authMe(app);
   authLogin(app);
+  authRegister(app);
 
   return app;
 }
