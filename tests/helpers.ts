@@ -51,6 +51,11 @@ export function request(app: HonoBase, token: string | null = null) {
         ...options,
       });
     },
+    delete: (path: string, options = {}) => {
+      return request("DELETE", path,
+        options,
+      );
+    },
   };
 }
 
