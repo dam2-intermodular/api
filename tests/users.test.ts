@@ -97,3 +97,20 @@ describe("users.update", () => {
     ).expectStatusToBe(201);
   });
 });
+
+describe("users.delete", () => {
+  test("should delete user", async () => {
+    const user = (
+      await (
+        await request(app, adminToken).post("/users", {
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+        })
+      ).json()
+    ).user;
+
+    await (
+      await request(app, adminToken).delete(`/users/${user._id}`)
+    ).expectStatusToBe(200);
+  });
+});
