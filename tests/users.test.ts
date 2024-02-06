@@ -23,7 +23,7 @@ describe("users.create", () => {
       password: faker.internet.password(),
       user_data: {
         name: faker.person.fullName(),
-        dni: faker.lorem.word({ length: { min: 9, max: 9 } })
+        dni: faker.lorem.word({ length: { min: 9, max: 9 } }),
       },
     });
 
@@ -43,10 +43,9 @@ describe("users.create", () => {
       email,
       password: faker.internet.password(),
       user_data: {
-        dni
-      }
+        dni,
+      },
     });
-
     expect(response1.status).toEqual(201);
 
     const response2 = await request(app, adminToken).post("/users", {
@@ -54,19 +53,17 @@ describe("users.create", () => {
       password: faker.internet.password(),
       user_data: {
         dni: "32132132A",
-      }
+      },
     });
-
     expect(response2.status).toEqual(400);
 
     const response3 = await request(app, adminToken).post("/users", {
       email: faker.internet.email,
       password: faker.internet.password(),
       user_data: {
-        dni
-      }
+        dni,
+      },
     });
-
     expect(response3.status).toEqual(400);
   });
 });

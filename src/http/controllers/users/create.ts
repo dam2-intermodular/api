@@ -49,9 +49,8 @@ export default (app: OpenAPIHono) => {
     }),
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
-      console.log(body.user_data.dni);
 
-      if (await isEmailOrDniUsed(body.email, body.user_data.dni)) {
+      if (await isEmailOrDniUsed(body.email, body.user_data?.dni)) {
         return c.json(
           {
             message: "Email or DNI already exists",
@@ -78,10 +77,24 @@ export default (app: OpenAPIHono) => {
   );
 };
 
-export async function isEmailOrDniUsed(email: string, dni: string): Promise<boolean> {
+export async function isEmailOrDniUsed(
+  email: string | null = null,
+  dni: string | null = null
+): Promise<boolean> {
   return new Promise((resolve) => {
-    User.exists({ or: [{ email }, { dni }] }).then((exists) => {
+    const or = [];
+
+    if (email) {
+      or.push({ email });
+    }
+
+    if (dni) {
+      or.push({ dni });
+    }
+
+    User.exists({ $or: or }).then((exists) => {
       resolve(exists !== null);
     });
   });
 }
+
