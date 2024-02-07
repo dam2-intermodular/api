@@ -23,6 +23,7 @@ describe("users.create", () => {
       password: faker.internet.password(),
       user_data: {
         name: faker.person.fullName(),
+        dni: faker.lorem.word({ length: { min: 9, max: 9 } }),
       },
     });
 
@@ -34,22 +35,36 @@ describe("users.create", () => {
     expect(success?.email).toBe(data.email);
   });
 
-  test("should check that email doesn't exist", async () => {
+  test("should check that email and dni don't exist", async () => {
     const email = faker.internet.email();
+    const dni = "12312312A";
 
     const response1 = await request(app, adminToken).post("/users", {
       email,
       password: faker.internet.password(),
+      user_data: {
+        dni,
+      },
     });
-
     expect(response1.status).toEqual(201);
 
     const response2 = await request(app, adminToken).post("/users", {
       email,
       password: faker.internet.password(),
+      user_data: {
+        dni: "32132132A",
+      },
     });
-
     expect(response2.status).toEqual(400);
+
+    const response3 = await request(app, adminToken).post("/users", {
+      email: faker.internet.email,
+      password: faker.internet.password(),
+      user_data: {
+        dni,
+      },
+    });
+    expect(response3.status).toEqual(400);
   });
 });
 

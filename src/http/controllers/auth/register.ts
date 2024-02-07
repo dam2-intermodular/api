@@ -4,12 +4,13 @@ import { User, UserRole } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
+import { isEmailOrDniUsed } from "../users/create";
 
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
       method: "post",
-      path: "/users",
+      path: "/register",
       request: {
         body: {
           content: {
@@ -17,8 +18,9 @@ export default (app: OpenAPIHono) => {
               schema: z.object({
                 email: z.string().email(),
                 password: z.string().min(8).max(255),
-                user_data: z.any().optional().default({}),
-                role: z.string().optional().default(UserRole.CLIENT),
+                name: z.string().min(1).max(255),
+                surname: z.string().min(1).max(255),
+                dni: z.string().min(9).max(9),
               }),
             },
           },
@@ -36,7 +38,7 @@ export default (app: OpenAPIHono) => {
           },
         },
         400: {
-          description: "Email already exists",
+          description: "Email already exists or bad request",
           content: {
             "application/json": {
               schema: z.object({
@@ -49,8 +51,7 @@ export default (app: OpenAPIHono) => {
     }),
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
-
-      if (await isEmailOrDniUsed(body.email, body.user_data?.dni)) {
+      if (await isEmailOrDniUsed(body.email, body.DNI)) {
         return c.json(
           {
             message: "Email or DNI already exists",
@@ -60,11 +61,17 @@ export default (app: OpenAPIHono) => {
       }
 
       const hashedPassword = await Bun.password.hash(body.password);
+      const userData = {
+        name: body.name,
+        surname: body.surname,
+        dni: body.dni,
+      };
 
       const user = await User.create({
-        user_data: body.user_data,
         email: body.email,
         password: hashedPassword,
+        user_data: userData,
+        role: UserRole.CLIENT,
       });
 
       return c.json(
@@ -76,25 +83,4 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-
-export async function isEmailOrDniUsed(
-  email: string | null = null,
-  dni: string | null = null
-): Promise<boolean> {
-  return new Promise((resolve) => {
-    const or = [];
-
-    if (email) {
-      or.push({ email });
-    }
-
-    if (dni) {
-      or.push({ dni });
-    }
-
-    User.exists({ $or: or }).then((exists) => {
-      resolve(exists !== null);
-    });
-  });
-}
 
