@@ -55,7 +55,7 @@ describe("users.create", () => {
         dni: faker.lorem.word({length: {min: 9, max: 9} }),
       },
     });
-    expect(response2.status).toEqual(400);
+    expect(response2.status).toEqual(409);
 
     const response3 = await request(app, adminToken).post("/users", {
       email: faker.internet.email,
@@ -64,7 +64,7 @@ describe("users.create", () => {
         dni,
       },
     });
-    expect(response3.status).toEqual(400);
+    expect(response3.status).toEqual(409);
   });
 });
 
