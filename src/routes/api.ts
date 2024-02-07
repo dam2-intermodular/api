@@ -5,6 +5,7 @@ import userUpdate from "./../http/controllers/users/update";
 import userDelete from "./../http/controllers/users/delete";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
+import authLogout from "./../http/controllers/auth/logout";
 import authRegister from "./../http/controllers/auth/register";
 import authMiddleware from "../http/middlewares/auth";
 import adminMiddleware from "../http/middlewares/admin";
@@ -23,6 +24,7 @@ export default function (app: any) {
   // Auth
   authMe(app);
   authLogin(app);
+  authLogout(app);
   authRegister(app);
 
   return app;

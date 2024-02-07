@@ -90,10 +90,45 @@ describe("auth with bearer", () => {
 
 describe("auth register", () => {
   test("should register user successfully", async () => {
-    const email = faker.internet.email;
-    const password = faker.internet.password;
-    const name = faker.person.firstName;
-    const surname = faker.person.lastName;
-    const dni = "12345678A";
-  })
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const name = faker.person.firstName();
+    const surname = faker.person.lastName();
+    const dni = faker.lorem.word({ length: { min: 9, max: 9 } });
+
+    const response = await request(app).post("/register", {
+      email,
+      password,
+      name,
+      surname,
+      dni
+    });
+
+    expect(response.status).toBe(201);
+  });
+});
+
+describe("auth logout", () => {
+  test("should logout successfully", async () => {
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    const createResponse = await request(app, adminToken).post("/users", {
+      email,
+      password
+    });
+
+    await createResponse.expectStatusToBe(201);
+
+    const loginResponse = await request(app).post("/login", {
+      email,
+      password,
+    });
+
+    await loginResponse.expectStatusToBe(200);
+
+    const logoutResponse = await request(app).post("/logout", {});
+
+    expect(logoutResponse.status).toBe(200);
+  });
 });

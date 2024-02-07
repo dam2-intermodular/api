@@ -55,7 +55,7 @@ export default (app: OpenAPIHono) => {
           {
             message: "Email or DNI already exists",
           },
-          400
+          409
         );
       }
 
