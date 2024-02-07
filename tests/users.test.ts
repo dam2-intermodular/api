@@ -58,7 +58,7 @@ describe("users.create", () => {
     expect(response2.status).toEqual(409);
 
     const response3 = await request(app, adminToken).post("/users", {
-      email: faker.internet.email,
+      email: faker.internet.email(),
       password: faker.internet.password(),
       user_data: {
         dni,
