@@ -37,7 +37,7 @@ describe("users.create", () => {
 
   test("should check that email and dni don't exist", async () => {
     const email = faker.internet.email();
-    const dni = faker.lorem.word({length({min: 9, max: 9})});
+    const dni = faker.lorem.word({length: {min: 9, max: 9} });
 
     const response1 = await request(app, adminToken).post("/users", {
       email,
