@@ -1,0 +1,24 @@
+name: Test
+on:
+  - pull_request
+jobs:
+  my-job:
+    name: my-job
+    runs-on: ubuntu-latest
+    steps:
+      # ...
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+
+      - run: cp .env.example .env
+
+      - run: bun install
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-username: developer
+          mongodb-password: secret
+          mongodb-db: hotel
+      
+      - run: bun test
