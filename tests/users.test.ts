@@ -52,7 +52,7 @@ describe("users.create", () => {
       email,
       password: faker.internet.password(),
       user_data: {
-        dni: "32132132A",
+        dni: faker.lorem.word({length: {min: 9, max: 9} }),
       },
     });
     expect(response2.status).toEqual(400);
