@@ -37,4 +37,22 @@ describe("rooms.list", () => {
       ],
     });
   });
+
+  test("should paginate rooms", async () => {
+    for (let i = 0; i < 20; i++) {
+      await Room.create({
+        room_number: i + 2,
+        beds: 2,
+        price_per_night: 100,
+        image_path: "image",
+        description: "description",
+        services: ["wifi"],
+      });
+    }
+
+    const response = await request(app).get("/rooms");
+    expect(response.status).toEqual(200);
+
+    expect((await response.json()).rooms.length).toEqual(10);
+  });
 });
