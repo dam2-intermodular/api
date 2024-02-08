@@ -42,4 +42,7 @@ export async function createApp(): Promise<HonoBase> {
 }
 
 const app = await createApp();
-export default app;
+export default {
+  port: Bun.env["PORT"] ?? 8000,
+  fetch: app.fetch,
+};
