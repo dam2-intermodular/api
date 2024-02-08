@@ -38,7 +38,17 @@ export default (app: OpenAPIHono) => {
           },
         },
         400: {
-          description: "Email already exists or bad request",
+          description: "Bad request",
+          content: {
+            "application/json": {
+              schema: z.object({
+                message: z.string(),
+              }),
+            },
+          },
+        },
+        409: {
+          description: "Email or DNI already exists",
           content: {
             "application/json": {
               schema: z.object({
@@ -51,12 +61,12 @@ export default (app: OpenAPIHono) => {
     }),
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
-      if (await isEmailOrDniUsed(body.email, body.DNI)) {
+      if (await isEmailOrDniUsed(body.email, body.dni)) {
         return c.json(
           {
             message: "Email or DNI already exists",
           },
-          400
+          409
         );
       }
 
