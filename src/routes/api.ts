@@ -3,6 +3,7 @@ import usersCreate from "./../http/controllers/users/create";
 import usersList from "./../http/controllers/users/list";
 import userUpdate from "./../http/controllers/users/update";
 import userDelete from "./../http/controllers/users/delete";
+import roomsList from "./../http/controllers/rooms/list";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
 import authLogout from "./../http/controllers/auth/logout";
@@ -26,6 +27,9 @@ export default function (app: any) {
   authLogin(app);
   authLogout(app);
   authRegister(app);
+
+  // Rooms
+  roomsList(app);
 
   return app;
 }

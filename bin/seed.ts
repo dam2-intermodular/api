@@ -76,9 +76,7 @@ async function createRooms() {
       description: faker.lorem.paragraph(),
       beds: Math.floor(Math.random() * 4) + 1,
       price_per_night: Math.floor(Math.random() * 100) + 50,
-      image_base_64: faker.image.dataUri({
-        type: "svg-base64",
-      }),
+      image_path: faker.image.url(),
       services: allServices
         .sort(() => 0.5 - Math.random())
         .slice(0, Math.floor(Math.random() * allServices.length)),

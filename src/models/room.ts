@@ -15,7 +15,7 @@ const roomSchema = new Schema({
     type: Number,
     required: true,
   },
-  image_base_64: {
+  image_path: {
     type: String,
     required: true,
   },
