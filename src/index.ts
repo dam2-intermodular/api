@@ -1,4 +1,3 @@
-import { Hono } from "hono";
 import declareRoutes from "./routes/api";
 import mongo from "./mongo";
 import { HonoBase } from "hono/hono-base";
