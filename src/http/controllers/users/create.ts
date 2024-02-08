@@ -89,7 +89,7 @@ export async function isEmailOrDniUsed(
     }
 
     if (dni) {
-      or.push({ dni });
+      or.push({ "user_data.dni": dni });
     }
 
     User.exists({ $or: or }).then((exists) => {
@@ -97,4 +97,3 @@ export async function isEmailOrDniUsed(
     });
   });
 }
-

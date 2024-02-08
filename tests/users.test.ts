@@ -7,6 +7,8 @@ import { User } from "../src/models/user";
 const app = await createApp();
 const adminToken = await getAdminBearerToken(app);
 
+User.deleteMany({}).exec();
+
 describe("users.create", () => {
   test("should fail validation if body is incomplete", async () => {
     const response = await request(app, adminToken).post("/users", {
@@ -37,13 +39,14 @@ describe("users.create", () => {
 
   test("should check that email and dni don't exist", async () => {
     const email = faker.internet.email();
-    const dni = faker.lorem.word({length: {min: 9, max: 9} });
+    const dni = faker.lorem.word({ length: { min: 9, max: 9 } });
 
     const response1 = await request(app, adminToken).post("/users", {
       email,
       password: faker.internet.password(),
       user_data: {
         dni,
+        name: faker.person.fullName(),
       },
     });
     expect(response1.status).toEqual(201);
@@ -52,7 +55,7 @@ describe("users.create", () => {
       email,
       password: faker.internet.password(),
       user_data: {
-        dni: faker.lorem.word({length: {min: 9, max: 9} }),
+        dni: faker.lorem.word({ length: { min: 9, max: 9 } }),
       },
     });
     expect(response2.status).toEqual(409);
