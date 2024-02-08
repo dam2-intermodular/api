@@ -32,6 +32,7 @@ export function request(app: HonoBase, token: string | null = null) {
       expectStatusToBe: async (status: number) => {
         return expect(response.status).toBe(status);
       },
+      raw: response,
     };
   };
 
@@ -52,9 +53,7 @@ export function request(app: HonoBase, token: string | null = null) {
       });
     },
     delete: (path: string, options = {}) => {
-      return request("DELETE", path,
-        options,
-      );
+      return request("DELETE", path, options);
     },
   };
 }

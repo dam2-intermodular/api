@@ -101,7 +101,7 @@ describe("auth register", () => {
       password,
       name,
       surname,
-      dni
+      dni,
     });
 
     expect(response.status).toBe(201);
@@ -115,7 +115,7 @@ describe("auth logout", () => {
 
     const createResponse = await request(app, adminToken).post("/users", {
       email,
-      password
+      password,
     });
 
     await createResponse.expectStatusToBe(201);
@@ -124,11 +124,13 @@ describe("auth logout", () => {
       email,
       password,
     });
-
     await loginResponse.expectStatusToBe(200);
 
-    const logoutResponse = await request(app).post("/logout", {});
+    const token = (await loginResponse.json()).token;
 
+    const logoutResponse = await request(app, token).get("/logout");
     expect(logoutResponse.status).toBe(200);
+    expect(logoutResponse.raw.headers.get("set-cookie")).toContain("token=;");
   });
 });
+
