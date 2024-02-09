@@ -152,7 +152,7 @@ describe("users.bookings", () => {
     });
 
     const response = await request(app, loginPayload.token).get(
-      `/users/${loginPayload.user._id}/bookings`
+      `/users/bookings`
     );
     expect(response.status).toEqual(200);
 
@@ -182,7 +182,7 @@ describe("users.bookings", () => {
     });
 
     const response = await request(app, loginPayload.token).get(
-      `/users/${loginPayload.user._id}/bookings`
+      `/users/bookings`
     );
     expect(response.status).toEqual(200);
 

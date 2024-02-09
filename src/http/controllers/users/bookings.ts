@@ -7,11 +7,11 @@ import { Booking } from "../../../models/booking";
 import { BookingResourceSchema } from "../../../resources/booking";
 
 export default (app: OpenAPIHono) => {
-  app.use("/users/:id/bookings", authMiddleware);
+  app.use("/users/bookings", authMiddleware);
   app.openapi(
     createRoute({
       method: "get",
-      path: "/users/:id/bookings",
+      path: "/users/bookings",
       request: {
         query: z.object({
           per_page: z.string().optional(),
@@ -38,7 +38,7 @@ export default (app: OpenAPIHono) => {
 
       const skip = (pageParsed - 1) * perPageParsed;
 
-      const userId = c.req.param("id");
+      const userId = c.get("user")._id;
 
       const bookings = await Booking.find({ user_id: userId })
         .skip(skip)
