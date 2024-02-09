@@ -1,10 +1,11 @@
 import { describe, test, expect } from "bun:test";
 import { createApp } from "../src/index";
 import { faker } from "@faker-js/faker";
-import { getAdminBearerToken, request } from "./helpers";
+import { login, request } from "./helpers";
+import { UserRole } from "../src/models/user";
 
 const app = await createApp();
-const adminToken = await getAdminBearerToken(app);
+const adminToken = (await login(app, UserRole.ADMIN)).token;
 
 describe("auth with cookies", () => {
   test("should not be able to get current user data if not logged", async () => {

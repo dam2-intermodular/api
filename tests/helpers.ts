@@ -58,17 +58,20 @@ export function request(app: HonoBase, token: string | null = null) {
   };
 }
 
-export async function getAdminBearerToken(app: HonoBase) {
+export async function login(app: HonoBase, role: UserRole = UserRole.CLIENT) {
   const password = faker.internet.password();
   const user = await User.create({
     email: faker.internet.email(),
     password: await Bun.password.hash(password),
     role: UserRole.ADMIN,
   });
-  return getBearerToken(app, {
-    email: user.email,
-    password,
-  });
+  return {
+    token: await getBearerToken(app, {
+      email: user.email,
+      password,
+    }),
+    user: user,
+  };
 }
 
 export async function getBearerToken(

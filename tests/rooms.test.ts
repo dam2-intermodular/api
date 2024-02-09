@@ -1,10 +1,9 @@
 import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
-import { getAdminBearerToken, request } from "./helpers";
+import { request } from "./helpers";
 import { Room } from "../src/models/room";
 
 const app = await createApp();
-// const adminToken = await getAdminBearerToken(app);
 
 beforeEach(async () => {
   await Room.deleteMany({}).exec();

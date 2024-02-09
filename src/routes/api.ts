@@ -4,6 +4,7 @@ import usersList from "./../http/controllers/users/list";
 import userUpdate from "./../http/controllers/users/update";
 import userDelete from "./../http/controllers/users/delete";
 import roomsList from "./../http/controllers/rooms/list";
+import userBookingsList from "./../http/controllers/users/bookings";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
 import authLogout from "./../http/controllers/auth/logout";
@@ -21,6 +22,7 @@ export default function (app: any) {
   usersList(app);
   userUpdate(app);
   userDelete(app);
+  userBookingsList(app);
 
   // Auth
   authMe(app);

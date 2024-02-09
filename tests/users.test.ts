@@ -1,14 +1,17 @@
 import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
 import { faker } from "@faker-js/faker";
-import { getAdminBearerToken, request } from "./helpers";
-import { User } from "../src/models/user";
+import { getBearerToken, request, login } from "./helpers";
+import { User, UserRole } from "../src/models/user";
+import { Booking, BookingStatus } from "../src/models/booking";
+import { Types } from "mongoose";
 
 const app = await createApp();
-const adminToken = await getAdminBearerToken(app);
+const adminToken = (await login(app, UserRole.ADMIN)).token;
 
 beforeEach(async () => {
   await User.deleteMany({}).exec();
+  await Booking.deleteMany({}).exec();
 });
 
 describe("users.create", () => {
@@ -132,5 +135,58 @@ describe("users.delete", () => {
     await (
       await request(app, adminToken).delete(`/users/${user._id}`)
     ).expectStatusToBe(200);
+  });
+});
+
+describe("users.bookings", () => {
+  test("should list bookings", async () => {
+    const loginPayload = await login(app);
+
+    const booking = await Booking.create({
+      room_id: new Types.ObjectId(),
+      user_id: loginPayload.user._id,
+      invoice_id: new Types.ObjectId(),
+      check_in_date: new Date(),
+      check_out_date: new Date(),
+      status: BookingStatus.PENDING,
+    });
+
+    const response = await request(app, loginPayload.token).get(
+      `/users/${loginPayload.user._id}/bookings`
+    );
+    expect(response.status).toEqual(200);
+
+    const data = (await response.json()).bookings;
+    expect(data.length).toBe(1);
+  });
+
+  test("should not list other user bookings", async () => {
+    const loginPayload = await login(app);
+
+    const booking = await Booking.create({
+      room_id: new Types.ObjectId(),
+      user_id: loginPayload.user._id,
+      invoice_id: new Types.ObjectId(),
+      check_in_date: new Date(),
+      check_out_date: new Date(),
+      status: BookingStatus.PENDING,
+    });
+
+    const privateBooking = await Booking.create({
+      room_id: new Types.ObjectId(),
+      user_id: new Types.ObjectId(),
+      invoice_id: new Types.ObjectId(),
+      check_in_date: new Date(),
+      check_out_date: new Date(),
+      status: BookingStatus.PENDING,
+    });
+
+    const response = await request(app, loginPayload.token).get(
+      `/users/${loginPayload.user._id}/bookings`
+    );
+    expect(response.status).toEqual(200);
+
+    const data = (await response.json()).bookings;
+    expect(data.length).toBe(1);
   });
 });
