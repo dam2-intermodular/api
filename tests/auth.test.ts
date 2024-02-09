@@ -133,4 +133,3 @@ describe("auth logout", () => {
     expect(logoutResponse.raw.headers.get("set-cookie")).toContain("token=;");
   });
 });
-

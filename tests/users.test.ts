@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
 import { faker } from "@faker-js/faker";
 import { getAdminBearerToken, request } from "./helpers";
@@ -7,7 +7,9 @@ import { User } from "../src/models/user";
 const app = await createApp();
 const adminToken = await getAdminBearerToken(app);
 
-User.deleteMany({}).exec();
+beforeEach(async () => {
+  await User.deleteMany({}).exec();
+});
 
 describe("users.create", () => {
   test("should fail validation if body is incomplete", async () => {

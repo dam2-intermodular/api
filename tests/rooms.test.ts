@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
 import { getAdminBearerToken, request } from "./helpers";
 import { Room } from "../src/models/room";
@@ -6,7 +6,9 @@ import { Room } from "../src/models/room";
 const app = await createApp();
 // const adminToken = await getAdminBearerToken(app);
 
-Room.deleteMany({}).exec();
+beforeEach(async () => {
+  await Room.deleteMany({}).exec();
+});
 
 describe("rooms.list", () => {
   test("should list rooms", async () => {
@@ -21,7 +23,6 @@ describe("rooms.list", () => {
 
     const response = await request(app).get("/rooms");
     expect(response.status).toEqual(200);
-
     expect(await response.json()).toEqual({
       rooms: [
         {
@@ -52,7 +53,6 @@ describe("rooms.list", () => {
 
     const response = await request(app).get("/rooms");
     expect(response.status).toEqual(200);
-
     expect((await response.json()).rooms.length).toEqual(10);
   });
 });
