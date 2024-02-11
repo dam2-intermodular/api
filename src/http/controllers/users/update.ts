@@ -61,10 +61,9 @@ export default (app: OpenAPIHono) => {
         body.password = await Bun.password.hash(body.password);
       }
 
-      const user = await User.findOneAndUpdate(
-        {
-          _id: c.req.param("id"),
-        },
+      const user = await User.findOneAndUpdate({
+        _id: c.req.param("id"),
+      },
         body,
         {
           new: true,
@@ -72,17 +71,15 @@ export default (app: OpenAPIHono) => {
       );
 
       if (!user)
-        return c.json(
-          {
-            message: "User not found",
-          },
+        return c.json({
+          message: "User not found",
+        },
           404
         );
 
-      return c.json(
-        {
-          user: createResourceFromDocument(user, UserResourceSchema),
-        },
+      return c.json({
+        user: createResourceFromDocument(user, UserResourceSchema),
+      },
         201
       );
     }
