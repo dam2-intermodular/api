@@ -42,7 +42,9 @@ export default (app: OpenAPIHono) => {
         rooms: rooms.map((room) =>
           createResourceFromDocument(room, RoomResourceSchema)
         ),
-      });
+      },
+        200
+      );
     }
   );
 };

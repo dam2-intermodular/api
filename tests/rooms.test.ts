@@ -54,4 +54,9 @@ describe("rooms.list", () => {
     expect(response.status).toEqual(200);
     expect((await response.json()).rooms.length).toEqual(10);
   });
+
+  test("should show a specific room", async () => {
+    //POST /room necesario para crear habitación y seguidamente testear el GET de una forma fiable
+    /*TODO*/
+  });
 });
