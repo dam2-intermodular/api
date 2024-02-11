@@ -11,18 +11,22 @@ const roomSchema = new Schema({
     type: Number,
     required: true,
   },
+
   price_per_night: {
     type: Number,
     required: true,
   },
+
   image_path: {
     type: String,
     required: true,
   },
+
   description: {
     type: String,
     required: true,
   },
+
   services: {
     type: Array,
     required: true,
@@ -32,6 +36,7 @@ const roomSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+
   updatedAt: {
     type: Date,
     default: null,

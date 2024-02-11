@@ -1,30 +1,28 @@
 import { Context } from "hono";
 import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { Room } from "../../../models/room";
+import { Booking } from "../../../models/booking";
 
 export default (app: OpenAPIHono) => {
     app.openapi(
         createRoute({
             method: "get",
-            path: "/room/:room_number",
+            path: "/booking/:id",
             responses: {
                 200: {
-                    description: "Room details",
+                    description: "Booking details",
                     content: {
                         "application/json": {
                             schema: z.object({
-                                room: z.object({
-                                    _id: z.string(),
-                                    room_number: z.number(),
-                                    beds: z.number(),
-                                    price_per_night: z.number(),
-                                    image_path: z.string(),
-                                    description: z.string(),
-                                    services: z.array(z.string()),
-                                    createdAt: z.string(),
-                                    updatedAt: z.string(),
-                                })
+                                _id: z.string(),
+                                room_id: z.string(),
+                                user_id: z.string(),
+                                invoice_id: z.string(),
+                                check_in_date: z.string(),
+                                check_out_date: z.string(),
+                                status: z.string(),
+                                createdAt: z.string(),
+                                updatedAt: z.string(),
                             }),
                         },
                     },
@@ -42,9 +40,9 @@ export default (app: OpenAPIHono) => {
             },
         }),
         async function (c: Context): Promise<any> {
-            const roomNumber = c.req.param("room_number");
+            const bookingId = c.req.param("id");
 
-            if (!roomNumber) {
+            if (!bookingId) {
                 return c.json({
                     message: "No params provided"
                 },
@@ -52,20 +50,20 @@ export default (app: OpenAPIHono) => {
                 );
             }
 
-            const room = await Room.findOne({
-                room_number: roomNumber
+            const booking = await Booking.findOne({
+                _id: bookingId
             });
 
-            if (!room) {
+            if (!booking) {
                 return c.json({
-                    message: "Room not found"
+                    message: "Booking not found"
                 },
                     404
                 );
             }
 
             return c.json({
-                room
+                booking
             },
                 200
             );

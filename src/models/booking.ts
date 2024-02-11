@@ -8,13 +8,14 @@ enum BookingStatus {
 }
 
 const bookingSchema = new Schema({
-  // _id: Schema.Types.ObjectId,
+  //_id: Schema.Types.ObjectId,
 
   room_id: {
     type: Schema.Types.ObjectId,
     ref: "Room",
     required: true,
   },
+
   user_id: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -30,6 +31,7 @@ const bookingSchema = new Schema({
     type: Date,
     required: true,
   },
+
   check_out_date: {
     type: Date,
     required: true,
@@ -45,6 +47,7 @@ const bookingSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+
   updatedAt: {
     type: Date,
     default: null,
