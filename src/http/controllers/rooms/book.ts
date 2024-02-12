@@ -5,6 +5,13 @@ import { Room } from "../../../models/room";
 import { Booking } from "../../../models/booking";
 import authMiddleware from "../../middlewares/auth";
 
+// Autor: Victor Garcia
+//
+// Esta ruta con el middleware de autenticación, permite a los usuarios reservar una habitación.
+// Se valida que la fecha de inicio sea menor a la fecha de fin y que la fecha de inicio sea en el futuro.
+// Si la habitación no está disponible, se devuelve un error 404.
+// Si la habitación está disponible, se crea una reserva y se actualiza la disponibilidad de la habitación.
+// Se devuelve la reserva creada.
 export default (app: OpenAPIHono) => {
   app.use("/rooms/:id/book", authMiddleware);
   app.openapi(
