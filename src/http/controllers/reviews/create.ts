@@ -53,8 +53,7 @@ export default (app: OpenAPIHono) => {
       const body = await c.req.json();
 
       const review = await Review.create({
-        userId: body.userId,
-
+        userId: body.user_id,
         username: body.username,
         room_id: body.room_id,
         room_name: body.room_name,
