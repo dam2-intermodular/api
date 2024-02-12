@@ -32,6 +32,11 @@ const roomSchema = new Schema({
     required: true,
   },
 
+  availability: {
+    type: [{ check_in_date: Date, check_out_date: Date }],
+    default: [],
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

@@ -4,6 +4,7 @@ import usersList from "./../http/controllers/users/list";
 import userUpdate from "./../http/controllers/users/update";
 import userDelete from "./../http/controllers/users/delete";
 import roomsList from "./../http/controllers/rooms/list";
+import roomsBook from "./../http/controllers/rooms/book";
 import userBookingsList from "./../http/controllers/users/bookings";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
@@ -32,6 +33,7 @@ export default function (app: any) {
 
   // Rooms
   roomsList(app);
+  roomsBook(app);
 
   return app;
 }
