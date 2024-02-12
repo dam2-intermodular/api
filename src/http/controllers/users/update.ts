@@ -4,11 +4,15 @@ import { User, UserRole } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
+import authMiddleware from "../../middlewares/auth";
+import adminMiddleware from "../../middlewares/admin";
 
 // Autor: Luis Miguel
 //
 // Esta ruta permite actualizar un usuario en el sistema.
 export default (app: OpenAPIHono) => {
+  app.use("/users/:id", authMiddleware);
+  app.use("/users/:id", adminMiddleware);
   app.openapi(
     createRoute({
       method: "put",

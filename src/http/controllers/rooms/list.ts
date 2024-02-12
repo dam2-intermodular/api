@@ -5,6 +5,11 @@ import { createResourceFromDocument } from "../../../mongo";
 import { RoomResourceSchema } from "../../../resources/room";
 import { Room } from "../../../models/room";
 
+// Autor: Luis Miguel
+//
+// Esta ruta es para obtener la lista de habitaciones.
+// Se retorna un array de habitaciones.
+// Se puede filtrar por página y cantidad de habitaciones por página.
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
@@ -38,11 +43,12 @@ export default (app: OpenAPIHono) => {
 
       const rooms = await Room.find().skip(skip).limit(perPageParsed).exec();
 
-      return c.json({
-        rooms: rooms.map((room) =>
-          createResourceFromDocument(room, RoomResourceSchema)
-        ),
-      },
+      return c.json(
+        {
+          rooms: rooms.map((room) =>
+            createResourceFromDocument(room, RoomResourceSchema)
+          ),
+        },
         200
       );
     }
