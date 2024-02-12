@@ -2,6 +2,9 @@ import { Context } from "hono";
 import { getCookie, deleteCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 
+// Autor: Victor Garcia
+//
+// Este middleware comprueba si el usuario está autenticado.
 export default async function authMiddleware(c: Context, next: Function) {
   if (!Bun.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is not set");

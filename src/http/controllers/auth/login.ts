@@ -18,6 +18,12 @@ type LoginResponse = {
   token: string;
 };
 
+// Autor: Victor Garcia
+//
+// Esta ruta permite loguear un usuario en el sistema.
+// Si el usuario y la contraseña son correctos, devuelve un 200, el objeto de usuario y un token de autenticación.
+// Ademas, guarda el token en una cookie.
+// Si es incorrecto, devuelve un 422.
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({

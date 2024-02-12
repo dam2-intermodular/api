@@ -77,6 +77,9 @@ export default (app: OpenAPIHono) => {
   );
 };
 
+// Autor: Luis Miguel
+//
+// Esta función verifica si un email o un dni ya están en uso en la base de datos.
 export async function isEmailOrDniUsed(
   email: string | null = null,
   dni: string | null = null
