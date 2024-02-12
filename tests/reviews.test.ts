@@ -3,6 +3,7 @@ import { createApp } from "../src/index";
 import { request } from "./helpers";
 import { Review } from "../src/models/review";
 import { faker } from "@faker-js/faker";
+import { Room } from "../src/models/room";
 
 const app = await createApp();
 
@@ -19,11 +20,14 @@ describe("reviews.create", () => {
   });
 
   test("should create review", async () => {
+
+    // Room.create({  });
+
     const response = await request(app).post("/reviews", {
       user_id: "23",
       username: faker.internet.userName(),
-      room_id: "3",
-      room_name: "Room 101",
+      room_id: "300",
+      room_number: 101,
       rating: 5,
       review: "This room was amazing!",
     });

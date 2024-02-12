@@ -18,7 +18,7 @@ export default (app: OpenAPIHono) => {
                 user_id: z.string(),
                 username: z.string(),
                 room_id: z.string(),
-                room_name: z.string(),
+                room_number: z.number(),
                 rating: z.number().int().min(1).max(5),
                 review: z.string().max(500).optional().default(""),
               }),
@@ -53,7 +53,7 @@ export default (app: OpenAPIHono) => {
       const body = await c.req.json();
 
       const review = await Review.create({
-        userId: body.user_id,
+        user_id: body.user_id,
         username: body.username,
         room_id: body.room_id,
         room_name: body.room_name,

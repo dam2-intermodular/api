@@ -1,11 +1,11 @@
-import { Schema, model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 const reviewSchema = new Schema({
   user_id: {
     type: Schema.Types.ObjectId,
     required: true,
   },
-  
+
   username: {
     type: String,
     required: true,
@@ -16,8 +16,8 @@ const reviewSchema = new Schema({
     required: true,
   },
 
-  room_name: {
-    type: String,
+  room_number: {
+    type: Number,
     required: true,
   },
 

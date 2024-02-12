@@ -8,7 +8,7 @@ export const ReviewResourceSchema = z.object({
   user_id: z.string(),
   username: z.string(),
   room_id: z.string(),
-  room_name: z.string(),
+  room_number: z.number(),
   rating: z.number(),
   review: z.string(),
 
