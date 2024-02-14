@@ -6,6 +6,10 @@ import userDelete from "./../http/controllers/users/delete";
 import roomsList from "./../http/controllers/rooms/list";
 import roomsBook from "./../http/controllers/rooms/book";
 import userBookingsList from "./../http/controllers/users/bookings";
+import roomsList from "./../http/controllers/rooms/list";
+import roomsOne from "./../http/controllers/rooms/one";
+import reviewsList from "./../http/controllers/reviews/list";
+import reviewsCreate from "./../http/controllers/reviews/create";
 import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
 import authLogout from "./../http/controllers/auth/logout";
@@ -18,8 +22,9 @@ export default function (app: any) {
   userBookingsList(app);
   usersCreate(app);
   usersList(app);
-  userUpdate(app);
-  userDelete(app);
+  usersUpdate(app);
+  usersDelete(app);
+  userBookingsList(app);
 
   // Auth
   authMe(app);
@@ -29,7 +34,11 @@ export default function (app: any) {
 
   // Rooms
   roomsList(app);
-  roomsBook(app);
+  roomsOne(app);
+
+  // Reviews
+  reviewsList(app);
+  reviewsCreate(app);
 
   return app;
 }
