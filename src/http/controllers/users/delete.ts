@@ -3,8 +3,12 @@ import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { User, UserRole } from "../../../models/user";
 import { UserResourceSchema } from "../../../resources/user";
+import authMiddleware from "../../middlewares/auth";
+import adminMiddleware from "../../middlewares/admin";
 
 export default (app: OpenAPIHono) => {
+  app.use("/users/:id", authMiddleware);
+  app.use("/users/:id", adminMiddleware);
   app.openapi(
     createRoute({
       method: "delete",
@@ -28,11 +32,9 @@ export default (app: OpenAPIHono) => {
     }),
 
     async function (c: Context): Promise<any> {
-      const user = await User.findByIdAndDelete(
-        {
-          _id: c.req.param("id"),
-        },
-      );
+      const user = await User.findByIdAndDelete({
+        _id: c.req.param("id"),
+      });
 
       if (!user) {
         return c.json(
@@ -51,3 +53,4 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
+
