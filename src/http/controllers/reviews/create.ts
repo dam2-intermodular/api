@@ -4,8 +4,10 @@ import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { ReviewResourceSchema } from "../../../resources/review";
 import { createResourceFromDocument } from "../../../mongo";
 import { Review } from "../../../models/review";
+import authMiddleware from "../../middlewares/auth";
 
 export default (app: OpenAPIHono) => {
+  app.use("/reviews", authMiddleware);
   app.openapi(
     createRoute({
       method: "post",
@@ -18,7 +20,6 @@ export default (app: OpenAPIHono) => {
                 user_id: z.string(),
                 username: z.string(),
                 room_id: z.string(),
-                room_number: z.number(),
                 rating: z.number().int().min(1).max(5),
                 review: z.string().max(500).optional().default(""),
               }),
@@ -54,9 +55,8 @@ export default (app: OpenAPIHono) => {
 
       const review = await Review.create({
         user_id: body.user_id,
-        username: body.username,
         room_id: body.room_id,
-        room_name: body.room_name,
+        username: body.username,
         rating: body.rating,
         review: body.review,
       });
@@ -70,3 +70,4 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
+

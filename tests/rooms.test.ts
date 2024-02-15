@@ -26,6 +26,7 @@ describe("rooms.list", () => {
       rooms: [
         {
           _id: expect.any(String),
+          room_number: expect.any(Number),
           beds: 2,
           price_per_night: 100,
           image_path: "image",

@@ -6,15 +6,14 @@ export const ReviewResourceSchema = z.object({
   }),
 
   user_id: z.string(),
-  username: z.string(),
   room_id: z.string(),
-  room_number: z.number(),
+
+  username: z.string(),
   rating: z.number(),
   review: z.string(),
-
-
 
   createdAt: z.date(),
 });
 
 export type ReviewResource = z.infer<typeof ReviewResourceSchema>;
+
