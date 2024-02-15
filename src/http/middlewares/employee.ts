@@ -11,7 +11,7 @@ export default async function adminMiddleware(c: Context, next: Function) {
         return c.json({ message: "Unauthorized" }, 401);
     }
 
-    if (user.role !== UserRole.EMPLOYEE) {
+    if (user.role !== UserRole.EMPLOYEE && user.role !== UserRole.ADMIN) {
         return c.json({ message: "Forbidden" }, 403);
     }
 
