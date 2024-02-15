@@ -19,6 +19,9 @@ export default (app: OpenAPIHono) => {
         query: z.object({
           per_page: z.string().optional(),
           page: z.string().optional(),
+          beds: z.coerce.number().optional(),
+          from: z.coerce.date().optional(),
+          to: z.coerce.date().optional(),
         }),
       },
       responses: {
@@ -46,7 +49,29 @@ export default (app: OpenAPIHono) => {
 
       const skip = (pageParsed - 1) * perPageParsed;
 
-      const rooms = await Room.find().skip(skip).limit(perPageParsed).exec();
+      const filters: any = {};
+
+      if (c.req.query("beds")) {
+        filters["beds"] = {
+          $gte: c.req.query("beds"),
+        };
+      }
+
+      if (c.req.query("from") && c.req.query("to")) {
+        filters["reservations"] = {
+          $not: {
+            $elemMatch: {
+              from: { $gte: c.req.query("to") },
+              to: { $lte: c.req.query("from") },
+            },
+          },
+        };
+      }
+
+      const rooms = await Room.find(filters)
+        .skip(skip)
+        .limit(perPageParsed)
+        .exec();
 
       return c.json(
         {
