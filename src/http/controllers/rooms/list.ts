@@ -28,6 +28,11 @@ export default (app: OpenAPIHono) => {
             "application/json": {
               schema: z.object({
                 rooms: z.array(RoomResourceSchema),
+                meta: z.object({
+                  total: z.number(),
+                  per_page: z.number(),
+                  page: z.number(),
+                }),
               }),
             },
           },
@@ -48,6 +53,11 @@ export default (app: OpenAPIHono) => {
           rooms: rooms.map((room) =>
             createResourceFromDocument(room, RoomResourceSchema)
           ),
+          meta: {
+            total: await Room.countDocuments(),
+            per_page: perPageParsed,
+            page: pageParsed,
+          },
         },
         200
       );

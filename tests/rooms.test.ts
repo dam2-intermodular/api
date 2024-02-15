@@ -36,6 +36,11 @@ describe("rooms.list", () => {
           createdAt: expect.any(String),
         },
       ],
+      meta: {
+        total: 1,
+        per_page: 10,
+        page: 1,
+      },
     });
   });
 
