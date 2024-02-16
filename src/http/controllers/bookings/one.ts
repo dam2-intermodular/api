@@ -2,10 +2,10 @@ import { Context } from "hono";
 import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { Booking } from "../../../models/booking";
-import adminMiddleware from "../../middlewares/admin";
+import employeeMiddleware from "../../middlewares/employee";
 
 export default (app: OpenAPIHono) => {
-    app.use("/booking/:id", adminMiddleware);
+    app.use("/booking/:id", employeeMiddleware);
     app.openapi(
         createRoute({
             method: "get",

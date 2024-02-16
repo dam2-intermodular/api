@@ -1,8 +1,7 @@
 import { Context } from "hono";
 import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { User, UserRole } from "../../../models/user";
-import { UserResourceSchema } from "../../../resources/user";
+import { User } from "../../../models/user";
 import authMiddleware from "../../middlewares/auth";
 import adminMiddleware from "../../middlewares/admin";
 
