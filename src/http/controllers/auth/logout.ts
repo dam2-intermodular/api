@@ -12,6 +12,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "get",
       path: "/logout",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       responses: {
         200: {
           description: "Logout successful",

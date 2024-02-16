@@ -32,6 +32,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "post",
       path: "/login",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {

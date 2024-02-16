@@ -13,6 +13,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "get",
       path: "/me",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       responses: {
         200: {
           description: "Get logged user info",
