@@ -17,6 +17,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "put",
       path: "/users/:id",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {

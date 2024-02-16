@@ -16,6 +16,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "post",
       path: "/register",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {

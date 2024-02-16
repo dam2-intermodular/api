@@ -19,7 +19,6 @@ export default function (app: any) {
   ping(app);
 
   // Users
-  userBookingsList(app);
   usersCreate(app);
   usersList(app);
   usersUpdate(app);

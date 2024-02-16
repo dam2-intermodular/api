@@ -11,7 +11,7 @@ User.deleteMany({}).exec();
 const admin = await User.create({
   username: "admin",
   email: "admin@admin.com",
-  password: "admin",
+  password: "12345678",
   role: UserRole.ADMIN,
 });
 

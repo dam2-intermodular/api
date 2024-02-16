@@ -12,6 +12,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "post",
       path: "/reviews",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {
@@ -70,4 +75,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-

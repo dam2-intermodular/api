@@ -12,7 +12,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "delete",
       path: "/users/:id",
-
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       responses: {
         204: {
           description: "User deleted successfully",
@@ -52,4 +56,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-

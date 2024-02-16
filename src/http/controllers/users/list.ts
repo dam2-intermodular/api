@@ -14,6 +14,11 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "get",
       path: "/users",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         query: z.object({
           per_page: z.string().optional(),
