@@ -5,11 +5,11 @@ import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
 import authMiddleware from "../../middlewares/auth";
-import employeeMiddleware from "../../middlewares/employee";
+import adminMiddleware from "../../middlewares/employee";
 
 export default (app: OpenAPIHono) => {
   app.use("/users", authMiddleware);
-  app.use("/users", employeeMiddleware);
+  app.use("/users", adminMiddleware);
   app.openapi(
     createRoute({
       method: "post",
