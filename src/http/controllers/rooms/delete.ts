@@ -1,17 +1,17 @@
 import { Context } from "hono";
 import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { User } from "../../../models/user";
 import authMiddleware from "../../middlewares/auth";
 import adminMiddleware from "../../middlewares/admin";
+import { Room } from "../../../models/room";
 
 export default (app: OpenAPIHono) => {
-  app.use("/users/:id", authMiddleware);
-  app.use("/users/:id", adminMiddleware);
+  app.use("/rooms/:room_number", authMiddleware);
+  app.use("/rooms/:room_number", adminMiddleware);
   app.openapi(
     createRoute({
       method: "delete",
-      path: "/users/:id",
+      path: "/rooms/:room_number",
       security: [
         {
           Bearer: [],
@@ -19,10 +19,10 @@ export default (app: OpenAPIHono) => {
       ],
       responses: {
         204: {
-          description: "User deleted successfully",
+          description: "Room deleted successfully",
         },
         404: {
-          description: "User not found",
+          description: "Room not found",
           content: {
             "application/json": {
               schema: z.object({
@@ -35,24 +35,34 @@ export default (app: OpenAPIHono) => {
     }),
 
     async function (c: Context): Promise<any> {
-      const user = await User.findByIdAndDelete({
-        _id: c.req.param("id"),
-      });
+      try {
+        const room = await Room.findByIdAndDelete({
+          _id: c.req.param("room_number"),
+        });
 
-      if (!user) {
+        if (!room) {
+          return c.json(
+            {
+              message: "Room not found",
+            },
+            404
+          );
+        }
+
         return c.json(
           {
-            message: "User not found",
+            message: "Room deleted successfully",
           },
-          404
+          200
+        );
+      } catch (error) {
+        return c.json(
+          {
+            message: error,
+          },
+          500
         );
       }
-      return c.json(
-        {
-          message: "User deleted",
-        },
-        200
-      );
     }
   );
 };

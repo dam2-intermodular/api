@@ -1,6 +1,9 @@
 import { Context } from "hono";
 import { UserRole } from "../../models/user";
 
+// Autor: Victor Garcia
+//
+// Este middleware comprueba si el usuario autenticado es administrador.
 export default async function adminMiddleware(c: Context, next: Function) {
   const user = await c.get("user");
 

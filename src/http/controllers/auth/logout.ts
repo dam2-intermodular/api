@@ -3,11 +3,20 @@ import { z } from "zod";
 import { getSignedCookie, deleteCookie } from "hono/cookie";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 
+// Autor: Luis Miguel
+//
+// Esta ruta es para cerrar la sesión del usuario.
+// Se elimina la cookie de token.
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
       method: "get",
       path: "/logout",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       responses: {
         200: {
           description: "Logout successful",
@@ -32,4 +41,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-

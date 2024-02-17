@@ -4,12 +4,21 @@ import { User } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
+import authMiddleware from "../../middlewares/auth";
+import employeeMiddleware from "../../middlewares/employee";
 
 export default (app: OpenAPIHono) => {
+  app.use("/users", authMiddleware);
+  app.use("/users", employeeMiddleware);
   app.openapi(
     createRoute({
       method: "get",
       path: "/users",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         query: z.object({
           per_page: z.string().optional(),

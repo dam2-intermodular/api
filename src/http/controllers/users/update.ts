@@ -1,15 +1,27 @@
 import { Context } from "hono";
 import { z } from "zod";
-import { User, UserRole } from "../../../models/user";
+import { User } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
+import authMiddleware from "../../middlewares/auth";
+import employeeMiddleware from "../../middlewares/employee";
 
+// Autor: Luis Miguel
+//
+// Esta ruta permite actualizar un usuario en el sistema.
 export default (app: OpenAPIHono) => {
+  app.use("/users/:id", authMiddleware);
+  app.use("/users/:id", employeeMiddleware);
   app.openapi(
     createRoute({
       method: "put",
       path: "/users/:id",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {
@@ -61,9 +73,10 @@ export default (app: OpenAPIHono) => {
         body.password = await Bun.password.hash(body.password);
       }
 
-      const user = await User.findOneAndUpdate({
-        _id: c.req.param("id"),
-      },
+      const user = await User.findOneAndUpdate(
+        {
+          _id: c.req.param("id"),
+        },
         body,
         {
           new: true,
@@ -71,18 +84,19 @@ export default (app: OpenAPIHono) => {
       );
 
       if (!user)
-        return c.json({
-          message: "User not found",
-        },
+        return c.json(
+          {
+            message: "User not found",
+          },
           404
         );
 
-      return c.json({
-        user: createResourceFromDocument(user, UserResourceSchema),
-      },
+      return c.json(
+        {
+          user: createResourceFromDocument(user, UserResourceSchema),
+        },
         201
       );
     }
   );
 };
-

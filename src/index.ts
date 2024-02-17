@@ -40,6 +40,11 @@ export async function createApp(): Promise<HonoBase> {
     openapi: "3.1.0",
   });
 
+  app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+    type: "http",
+    scheme: "bearer",
+  });
+
   return app;
 }
 

@@ -4,12 +4,21 @@ import { User, UserRole } from "../../../models/user";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
+import authMiddleware from "../../middlewares/auth";
+import employeeMiddleware from "../../middlewares/employee";
 
 export default (app: OpenAPIHono) => {
+  app.use("/users", authMiddleware);
+  app.use("/users", employeeMiddleware);
   app.openapi(
     createRoute({
       method: "post",
       path: "/users",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {
@@ -77,6 +86,9 @@ export default (app: OpenAPIHono) => {
   );
 };
 
+// Autor: Luis Miguel
+//
+// Esta función verifica si un email o un dni ya están en uso en la base de datos.
 export async function isEmailOrDniUsed(
   email: string | null = null,
   dni: string | null = null

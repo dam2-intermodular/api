@@ -12,8 +12,6 @@ export const ReviewResourceSchema = z.object({
   rating: z.number(),
   review: z.string(),
 
-
-
   createdAt: z.date(),
 });
 

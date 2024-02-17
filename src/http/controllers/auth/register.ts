@@ -6,11 +6,21 @@ import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
 import { isEmailOrDniUsed } from "../users/create";
 
+// Autor: Luis Miguel
+//
+// Esta ruta permite registrar un usuario en el sistema.
+// Comprueba que el email y el DNI no estén ya en uso.
+// Si no lo están, crea el usuario y devuelve un 201.
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
       method: "post",
       path: "/register",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {
@@ -93,4 +103,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-

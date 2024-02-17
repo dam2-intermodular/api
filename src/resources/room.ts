@@ -4,6 +4,7 @@ export const RoomResourceSchema = z.object({
   _id: z.object({
     $oid: z.string(),
   }),
+  room_number: z.string(),
   beds: z.number(),
   price_per_night: z.number(),
   image_path: z.string(),
