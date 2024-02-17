@@ -52,4 +52,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-

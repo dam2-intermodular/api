@@ -22,9 +22,11 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                user_id: z.string(),
-                username: z.string(),
                 room_id: z.string(),
+
+                username: z.string(),
+                room_number: z.number(),
+
                 rating: z.number().int().min(1).max(5),
                 review: z.string().max(500).optional().default(""),
               }),
@@ -56,15 +58,12 @@ export default (app: OpenAPIHono) => {
       },
     }),
     async function (c: Context): Promise<any> {
-      const body = await c.req.json();
+      const user = c.get("user");
 
-      const review = await Review.create({
-        user_id: body.user_id,
-        room_id: body.room_id,
-        username: body.username,
-        rating: body.rating,
-        review: body.review,
-      });
+      const body = await c.req.json();
+      body.user_id = user._id;
+
+      const review = await Review.create(body);
 
       return c.json(
         {

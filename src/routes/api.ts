@@ -7,6 +7,7 @@ import roomsList from "./../http/controllers/rooms/list";
 import roomsBook from "./../http/controllers/rooms/book";
 import roomsOne from "./../http/controllers/rooms/one";
 import roomsDelete from "./../http/controllers/rooms/delete";
+import roomsCreate from "./../http/controllers/rooms/create";
 import userBookingsList from "./../http/controllers/users/bookings";
 import reviewsList from "./../http/controllers/reviews/list";
 import reviewsCreate from "./../http/controllers/reviews/create";
@@ -36,6 +37,7 @@ export default function (app: any) {
   roomsOne(app);
   roomsBook(app);
   roomsDelete(app);
+  roomsCreate(app);
 
   // Reviews
   reviewsList(app);
