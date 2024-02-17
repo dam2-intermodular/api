@@ -2,7 +2,6 @@ import { Context } from "hono";
 import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { RoomResourceSchema } from "../../../resources/room";
-import { createResourceFromDocument } from "../../../mongo";
 import { Room } from "../../../models/room";
 
 export default (app: OpenAPIHono) => {
@@ -37,7 +36,7 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                review: RoomResourceSchema,
+                room: RoomResourceSchema,
               }),
             },
           },
@@ -94,7 +93,6 @@ export default (app: OpenAPIHono) => {
           return false;
         }
       }
-
     }
   )
 };

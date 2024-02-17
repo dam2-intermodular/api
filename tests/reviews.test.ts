@@ -1,9 +1,7 @@
 import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
 import { request } from "./helpers";
-import { Review } from "../src/models/review";
 import { faker } from "@faker-js/faker";
-import { Room } from "../src/models/room";
 
 const app = await createApp();
 

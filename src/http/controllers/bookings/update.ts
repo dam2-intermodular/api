@@ -1,43 +1,41 @@
 import { Context } from "hono";
 import { z } from "zod";
-import { Room } from "../../../models/room";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { RoomResourceSchema } from "../../../resources/room";
+import { BookingResourceSchema } from "../../../resources/booking";
 import { createResourceFromDocument } from "../../../mongo";
+import { Booking } from "../../../models/booking";
 
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
       method: "put",
-      path: "/room/:room_number",
+      path: "/booking/:id",
       request: {
         body: {
           content: {
             "application/json": {
-              schema: z.object({
-                room: z.object({
-                  _id: z.string(),
-                  room_number: z.number(),
-                  beds: z.number(),
-                  price_per_night: z.number(),
-                  image_path: z.string(),
-                  description: z.string(),
-                  services: z.array(z.string()),
-                  createdAt: z.string(),
-                  updatedAt: z.string(),
-                })
-              }),
+                schema: z.object({
+                    _id: z.string(),
+                    room_id: z.string(),
+                    user_id: z.string(),
+                    invoice_id: z.string(),
+                    check_in_date: z.string(),
+                    check_out_date: z.string(),
+                    status: z.string(),
+                    createdAt: z.string(),
+                    updatedAt: z.string(),
+                }),
             },
           },
         },
       },
       responses: {
         201: {
-          description: "Room updated",
+          description: "Book updated",
           content: {
             "application/json": {
               schema: z.object({
-                room: RoomResourceSchema,
+                book: BookingResourceSchema,
               }),
             },
           },
@@ -55,12 +53,11 @@ export default (app: OpenAPIHono) => {
       },
     }),
 
-
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
 
-      const room = await Room.findOneAndUpdate({
-        _id: c.req.param("room"),
+      const book = await Booking.findOneAndUpdate({
+        _id: c.req.param("book"),
       },
         body,
         {
@@ -68,18 +65,18 @@ export default (app: OpenAPIHono) => {
         }
       );
 
-      if (!room)
+      if (!book)
         return c.json({
-          message: "Room not found",
+          message: "Book not found",
         },
           404
         );
 
       return c.json({
-        room: createResourceFromDocument(room, RoomResourceSchema),
+        user: createResourceFromDocument(book, BookingResourceSchema),
       },
         201
       );
     }
-  );
+  )
 };
