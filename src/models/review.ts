@@ -5,7 +5,6 @@ const reviewSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-
   room_id: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -13,6 +12,11 @@ const reviewSchema = new Schema({
 
   username: {
     type: String,
+    required: true,
+  },
+
+  room_number: {
+    type: Number,
     required: true,
   },
 
@@ -32,9 +36,12 @@ const reviewSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const ReviewModel = model("Review", reviewSchema);
 
 export { ReviewModel as Review };
-

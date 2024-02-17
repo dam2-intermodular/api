@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 
 const roomSchema = new Schema({
-  // _id: Schema.Types.ObjectId,
   room_number: {
     type: Number,
     required: true,
@@ -19,7 +18,7 @@ const roomSchema = new Schema({
 
   image_path: {
     type: String,
-    required: true,
+    default: null,
   },
 
   description: {
@@ -41,7 +40,6 @@ const roomSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-
   updatedAt: {
     type: Date,
     default: null,
