@@ -4,6 +4,7 @@ import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { Room } from "../../../models/room";
 import { Booking } from "../../../models/booking";
 import authMiddleware from "../../middlewares/auth";
+import { isValidObjectId } from "mongoose";
 
 // Autor: Victor Garcia
 //
@@ -81,6 +82,15 @@ export default (app: OpenAPIHono) => {
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
       const roomId = c.req.param("id");
+
+      if (!isValidObjectId(roomId)) {
+        return c.json(
+          {
+            error: "Invalid room id",
+          },
+          404
+        );
+      }
 
       const user = c.get("user");
 
