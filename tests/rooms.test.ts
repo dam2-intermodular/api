@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach } from "bun:test";
 import { createApp } from "../src/index";
 import { login, request } from "./helpers";
 import { Room } from "../src/models/room";
+import { UserRole } from "../src/models/user";
 
 const app = await createApp();
 
@@ -10,31 +11,44 @@ beforeEach(async () => {
 });
 
 describe("rooms.create", () => {
-  test("should fail validation if body is incomplete", async () => {
-    const response = await request(app).post("/reviews", {
-      _id: "2",
-      room_number: 103,
+  test("should create room", async () => {
+    const loginPayload = await login(app, UserRole.ADMIN);
+
+    const response = await request(app, loginPayload.token).post("/rooms", {
+      room_number: 3,
       beds: 2,
-      price_per_night: 123,
-      image_path: "sgdfgdfgr",
-      // missing rest
+      price_per_night: 120,
+      image_path: "img",
+      description: "Good room",
+      services: ["wifi"],
     });
 
-    expect(response.status).toEqual(400);
+    expect(response.status).toEqual(201);
+    expect(await response.json()).toEqual({
+      room: {
+        _id: expect.any(String),
+        room_number: 3,
+        beds: 2,
+        price_per_night: 120,
+        image_path: null,
+        description: "Good room",
+        services: ["wifi"],
+        updatedAt: null,
+        createdAt: expect.any(String),
+      },
+    });
   });
 });
 
 describe("rooms.update", () => {
   test("should update room", async () => {
     await Room.updateOne({
-      room_number:3,
-      beds:2,
-      price_per_night:120,
-      image_path:"img",
-      description:"Good room",
-    })
-
-      
+      room_number: 3,
+      beds: 2,
+      price_per_night: 120,
+      image_path: "img",
+      description: "Good room",
+    });
   });
 });
 

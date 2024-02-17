@@ -5,14 +5,13 @@ const reviewSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-
-  username: {
-    type: String,
+  room_id: {
+    type: Schema.Types.ObjectId,
     required: true,
   },
 
-  room_id: {
-    type: Schema.Types.ObjectId,
+  username: {
+    type: String,
     required: true,
   },
 
@@ -32,8 +31,12 @@ const reviewSchema = new Schema({
     type: String,
     required: true,
   },
-    
+
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },
