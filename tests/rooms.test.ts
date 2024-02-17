@@ -9,6 +9,35 @@ beforeEach(async () => {
   await Room.deleteMany({}).exec();
 });
 
+describe("rooms.create", () => {
+  test("should fail validation if body is incomplete", async () => {
+    const response = await request(app).post("/reviews", {
+      _id: "2",
+      room_number: 103,
+      beds: 2,
+      price_per_night: 123,
+      image_path: "sgdfgdfgr",
+      // missing rest
+    });
+
+    expect(response.status).toEqual(400);
+  });
+});
+
+describe("rooms.update", () => {
+  test("should update room", async () => {
+    await Room.updateOne({
+      room_number:3,
+      beds:2,
+      price_per_night:120,
+      image_path:"img",
+      description:"Good room",
+    })
+
+      
+  });
+});
+
 describe("rooms.list", () => {
   test("should list rooms", async () => {
     await Room.create({
