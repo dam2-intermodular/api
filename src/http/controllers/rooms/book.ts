@@ -119,7 +119,7 @@ export default (app: OpenAPIHono) => {
         );
       }
 
-      const booking = Booking.create({
+      const booking = await Booking.create({
         room_id: room._id,
         user_id: user._id,
         check_in_date: body.start,
