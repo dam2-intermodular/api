@@ -15,6 +15,8 @@ import authMe from "./../http/controllers/auth/me";
 import authLogin from "./../http/controllers/auth/login";
 import authLogout from "./../http/controllers/auth/logout";
 import authRegister from "./../http/controllers/auth/register";
+import bookingsUpdate from "./../http/controllers/bookings/update";
+import bookingsDelete from "./../http/controllers/bookings/delete";
 
 export default function (app: any) {
   ping(app);
@@ -38,6 +40,10 @@ export default function (app: any) {
   roomsBook(app);
   roomsDelete(app);
   roomsCreate(app);
+
+  // Bookings
+  bookingsUpdate(app);
+  bookingsDelete(app);
 
   // Reviews
   reviewsList(app);
