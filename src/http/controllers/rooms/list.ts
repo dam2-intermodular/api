@@ -58,11 +58,11 @@ export default (app: OpenAPIHono) => {
       }
 
       if (c.req.query("from") && c.req.query("to")) {
-        filters["reservations"] = {
+        filters["availability"] = {
           $not: {
             $elemMatch: {
-              from: { $gte: c.req.query("to") },
-              to: { $lte: c.req.query("from") },
+              check_in_date: { $gte: c.req.query("to") },
+              check_out_date: { $lte: c.req.query("from") },
             },
           },
         };
