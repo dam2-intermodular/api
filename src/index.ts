@@ -1,6 +1,7 @@
 import declareRoutes from "./routes/api";
 import mongo from "./mongo";
 import { HonoBase } from "hono/hono-base";
+import { logger } from "hono/logger";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import { declarePublicDirectory } from "./public";
@@ -22,6 +23,9 @@ export async function createApp(): Promise<HonoBase> {
   await bootstrapMongo();
 
   let app = new OpenAPIHono();
+
+  app.use(logger());
+
   declareRoutes(app);
   declarePublicDirectory(app);
 
