@@ -93,4 +93,31 @@ describe("bookings", () => {
     const currentRoom = await Room.findOne({ _id: room._id });
     expect(currentRoom!!.availability.length).toEqual(0);
   });
+
+  test("should list bookings", async () => {
+    const loginPayload = await login(app);
+
+    const room = await Room.create({
+      room_number: 1,
+      beds: 2,
+      price_per_night: 100,
+      image_path: "image",
+      description: "description",
+      services: ["wifi"],
+    });
+
+    const response = await request(app, loginPayload.token).post(
+      `/rooms/${room._id}/book`,
+      {
+        start: new Date(),
+        end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      }
+    );
+    expect(response.status).toEqual(200);
+
+    const response1 = await request(app, loginPayload.token).get("/bookings");
+    expect(response1.status).toEqual(200);
+    const response1Body = await response1.json();
+    expect(response1Body.bookings.length).toEqual(1);
+  });
 });

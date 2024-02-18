@@ -17,6 +17,7 @@ import authLogout from "./../http/controllers/auth/logout";
 import authRegister from "./../http/controllers/auth/register";
 import bookingsUpdate from "./../http/controllers/bookings/update";
 import bookingsDelete from "./../http/controllers/bookings/delete";
+import bookingsList from "./../http/controllers/bookings/list";
 
 export default function (app: any) {
   ping(app);
@@ -44,6 +45,7 @@ export default function (app: any) {
   // Bookings
   bookingsUpdate(app);
   bookingsDelete(app);
+  bookingsList(app);
 
   // Reviews
   reviewsList(app);
