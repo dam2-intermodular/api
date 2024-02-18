@@ -4,6 +4,7 @@ import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { Room } from "../../../models/room";
 import { Booking } from "../../../models/booking";
 import authMiddleware from "../../middlewares/auth";
+import { isValidObjectId } from "mongoose";
 
 // Autor: Víctor García Fernández
 //
@@ -84,12 +85,20 @@ export default (app: OpenAPIHono) => {
       // y el usuario autenticado
       const body = await c.req.json();
       const roomId = c.req.param("id");
-      const user = c.get("user");
-
-      if (roomId == null || user == null) {
+      if (!isValidObjectId(roomId)) {
         return c.json(
           {
-            message: "Params not provided or user not found"
+            error: "Invalid room id",
+          },
+          404
+        );
+      }
+      const user = c.get("user");
+
+      if (user == null) {
+        return c.json(
+          {
+            message: "Params not provided"
           },
           400
         );
@@ -127,7 +136,7 @@ export default (app: OpenAPIHono) => {
         );
       }
       // Se crea la reserva
-      const booking = Booking.create({
+      const booking = await Booking.create({
         room_id: room._id,
         user_id: user._id,
         check_in_date: body.start,

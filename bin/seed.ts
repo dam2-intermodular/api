@@ -11,7 +11,7 @@ User.deleteMany({}).exec();
 const admin = await User.create({
   username: "admin",
   email: "admin@admin.com",
-  password: "12345678",
+  password: await Bun.password.hash("12345678"),
   role: UserRole.ADMIN,
 });
 
@@ -47,6 +47,8 @@ for (const index of Array(50).keys()) {
 
   rooms.push(await Room.create(payload));
 }
+
+console.log("Done");
 
 // const USER_COUNT = 100;
 // const ROOM_COUNT = 50;
