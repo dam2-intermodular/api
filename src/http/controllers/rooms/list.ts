@@ -61,8 +61,8 @@ export default (app: OpenAPIHono) => {
         filters["availability"] = {
           $not: {
             $elemMatch: {
-              check_in_date: { $gte: new Date(c.req.query("to")!!) },
-              check_out_date: { $lte: new Date(c.req.query("from")!!) },
+              check_in_date: { $gte: c.req.query("from") },
+              check_out_date: { $lte: c.req.query("to") },
             },
           },
         };
