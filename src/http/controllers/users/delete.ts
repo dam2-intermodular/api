@@ -52,7 +52,7 @@ export default (app: OpenAPIHono) => {
 
       // Se busca por su ID y se elimina, devolviendo el usuario eliminado
       const user = await User.findByIdAndDelete({
-        id,
+        _id: id,
       });
 
       // Se comprueba que se haya eliminado
