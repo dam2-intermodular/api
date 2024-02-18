@@ -7,6 +7,9 @@ import { Room } from "../../../models/room";
 import authMiddleware from "../../middlewares/auth";
 import adminMiddleware from "../../middlewares/employee";
 
+// Autor: Lucía Lozano López
+//
+// Esta ruta creará una habitación cuyo número de habitación sea único
 export default (app: OpenAPIHono) => {
   app.use("/rooms", authMiddleware);
   app.use("/rooms", adminMiddleware);
@@ -25,10 +28,8 @@ export default (app: OpenAPIHono) => {
             "application/json": {
               schema: z.object({
                 room_number: z.number(),
-
                 beds: z.number(),
                 price_per_night: z.number(),
-
                 description: z.string(),
                 services: z.array(z.string()),
               }),
@@ -60,18 +61,21 @@ export default (app: OpenAPIHono) => {
       },
     }),
 
-    async function createRoom(c: Context): Promise<any> {
+    async function (c: Context): Promise<any> {
       const body = await c.req.json();
 
+      // Se recoge el cuerpo de la petición y comprueba si el número de
+      // habitación es único.
       if (await isRoomNumberUnique(body.room_number)) {
         return c.json(
           {
-            error: "Room with this id already exists",
+            error: "Room with this number already exists",
           },
           409
         );
       }
 
+      // Se crea la habitación y se guarda el resultado
       const room = await Room.create({
         room_number: body.room_number,
         beds: body.beds,
@@ -79,6 +83,17 @@ export default (app: OpenAPIHono) => {
         description: body.description,
         services: body.services,
       });
+
+      // Se comprueba que se haya creado correctamente
+      if (!room) {
+        return c.json(
+          {
+            message: "Error creating room"
+          },
+          400)
+      }
+
+      // Se devuelve la habitación creada como su recurso
       return c.json(
         {
           room: createResourceFromDocument(room, RoomResourceSchema),
@@ -89,8 +104,9 @@ export default (app: OpenAPIHono) => {
   );
 };
 
+// Comprueba que el número de habitación sea único
 async function isRoomNumberUnique(number: Number): Promise<boolean> {
   const exists = await Room.exists({ room_number: number });
-  return exists !== null;
+  return exists == null;
 }
 

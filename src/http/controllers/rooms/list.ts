@@ -5,7 +5,7 @@ import { createResourceFromDocument } from "../../../mongo";
 import { RoomResourceSchema } from "../../../resources/room";
 import { Room } from "../../../models/room";
 
-// Autor: Luis Miguel
+// Autor: Víctor García López
 //
 // Esta ruta es para obtener la lista de habitaciones.
 // Se retorna un array de habitaciones.
@@ -43,20 +43,21 @@ export default (app: OpenAPIHono) => {
       },
     }),
     async function (c: Context): Promise<any> {
+      // Se establece la paginación especificada o por defecto
       const { per_page, page } = c.req.query();
       const perPageParsed = parseInt(per_page) || 10;
       const pageParsed = parseInt(page) || 1;
-
       const skip = (pageParsed - 1) * perPageParsed;
 
+      // Se crea un objeto de filtros
       const filters: any = {};
-
+      //Se comprueban los filtros para añadirlos
       if (c.req.query("beds")) {
         filters["beds"] = {
           $gte: c.req.query("beds"),
         };
       }
-
+      //Se comprueban los filtros para añadirlos
       if (c.req.query("from") && c.req.query("to")) {
         filters["reservations"] = {
           $not: {
@@ -67,12 +68,21 @@ export default (app: OpenAPIHono) => {
           },
         };
       }
-
+      // Se buscan las habitaciones con los filtros y paginaciones
       const rooms = await Room.find(filters)
         .skip(skip)
         .limit(perPageParsed)
         .exec();
-
+      // Se comprueban los resultados
+      if (!rooms) {
+        return c.json(
+          {
+            message: "Error obtaining rooms"
+          },
+          400
+        );
+      }
+      // Se mapean y devuelven los resultados paginados
       return c.json(
         {
           rooms: rooms.map((room) =>

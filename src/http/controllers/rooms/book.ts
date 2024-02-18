@@ -5,10 +5,11 @@ import { Room } from "../../../models/room";
 import { Booking } from "../../../models/booking";
 import authMiddleware from "../../middlewares/auth";
 
-// Autor: Victor Garcia
+// Autor: Víctor García Fernández
 //
 // Esta ruta con el middleware de autenticación, permite a los usuarios reservar una habitación.
 // Se valida que la fecha de inicio sea menor a la fecha de fin y que la fecha de inicio sea en el futuro.
+// Se validan todos los rangos posibles que puedan coincidir con reservas ya existentes.
 // Si la habitación no está disponible, se devuelve un error 404.
 // Si la habitación está disponible, se crea una reserva y se actualiza la disponibilidad de la habitación.
 // Se devuelve la reserva creada.
@@ -79,11 +80,28 @@ export default (app: OpenAPIHono) => {
       },
     }),
     async function (c: Context): Promise<any> {
+      // Se recogen el cuerpo, la id de parámetros de la URL
+      // y el usuario autenticado
       const body = await c.req.json();
       const roomId = c.req.param("id");
-
       const user = c.get("user");
 
+      if (roomId == null || user == null) {
+        return c.json(
+          {
+            message: "Params not provided or user not found"
+          },
+          400
+        );
+      }
+      // Se busca si la habitación está libre durante el rango de la petición
+      // La siguiente query cubre todos los rangos que puedan coincidir
+      // Al obligar que la habitación a devolver no tenga:
+      // Fecha de entrada anterior a la fecha de salida de la petición
+      // **Y**
+      // Fecha de salida posterior a la fecha de entrada de la petición
+      // Esta query $not excluye la habitación si no está libre
+      // durante el rango de fechas de la petición
       const room = await Room.findOne({
         _id: roomId,
         availability: {
@@ -99,7 +117,7 @@ export default (app: OpenAPIHono) => {
           },
         },
       });
-
+      // Si la habitación no está disponible, se devuelve un 404
       if (!room) {
         return c.json(
           {
@@ -108,7 +126,7 @@ export default (app: OpenAPIHono) => {
           404
         );
       }
-
+      // Se crea la reserva
       const booking = Booking.create({
         room_id: room._id,
         user_id: user._id,
@@ -116,15 +134,25 @@ export default (app: OpenAPIHono) => {
         check_out_date: body.end,
       });
 
+      if (!booking) {
+        return c.json(
+          {
+            message: "Error creating the booking"
+          },
+          400
+        )
+      }
+      // Se guarda el rango de fechas reservado en la habitación
       room.availability.push({
         check_in_date: body.start,
         check_out_date: body.end,
       });
       await room.save();
-
+      // Se devuelve la reserva creada
       return c.json({
         booking,
-      });
+      },
+        200);
     }
   );
 };

@@ -5,17 +5,17 @@ import { User } from "../../../models/user";
 import { UserResourceSchema } from "../../../resources/user";
 import { createResourceFromDocument } from "../../../mongo";
 
-// Autor: Lucía Lozano
+// Autor: Luis Miguel Palos Alhama
 //
-// Esta ruta es para obtener la información del usuario logueado.
+// Esta ruta es para actualizar la información del usuario logueado.
 // Se utiliza el middleware de autenticación para verificar que el usuario esté logueado.
-// Se retorna la información del usuario injectada por el middleware.
+// Se retorna la información del usuario logueado tras actualizarse.
 export default (app: OpenAPIHono) => {
-    app.use("/me/update", authMiddleware);
+    app.use("/me", authMiddleware);
     app.openapi(
         createRoute({
             method: "put",
-            path: "/me/update",
+            path: "/me",
             request: {
                 body: {
                     content: {
@@ -60,6 +60,8 @@ export default (app: OpenAPIHono) => {
         async function (c: Context): Promise<any> {
             const body = await c.req.json();
 
+            // Se recoge el cuerpo de la petición en JSON
+            // Se comprueba si ha recibido contraseña vacía
             if (body.password !== undefined) {
                 if (body.password === "")
                     return c.json(
@@ -68,13 +70,14 @@ export default (app: OpenAPIHono) => {
                         },
                         400
                     );
-
+                // Si existe, se hashea
                 body.password = await Bun.password.hash(body.password);
             }
 
+            // Se busca el usuario por su ID y se actualiza
             const user = await User.findOneAndUpdate(
                 {
-                    _id: c.req.param(c.get("user")._id),
+                    _id: c.get("user")._id,
                 },
                 body,
                 {
@@ -82,6 +85,7 @@ export default (app: OpenAPIHono) => {
                 }
             );
 
+            // Se comprueba que haya funcionado
             if (!user)
                 return c.json(
                     {
@@ -90,6 +94,7 @@ export default (app: OpenAPIHono) => {
                     404
                 );
 
+            // Se devuelve el usuario actualizado
             return c.json(
                 {
                     user: createResourceFromDocument(user, UserResourceSchema),

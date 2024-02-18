@@ -6,6 +6,9 @@ import { createResourceFromDocument } from "../../../mongo";
 import { Review } from "../../../models/review";
 import authMiddleware from "../../middlewares/auth";
 
+// Autora: Lucía Lozano López
+//
+// Esta ruta permite a los usuarios autenticados crear reviews
 export default (app: OpenAPIHono) => {
   app.use("/reviews", authMiddleware);
   app.openapi(
@@ -58,13 +61,27 @@ export default (app: OpenAPIHono) => {
       },
     }),
     async function (c: Context): Promise<any> {
+      // Se recoge el usuario guardado tras iniciar sesión
       const user = c.get("user");
 
+      // Se guarda el cuerpo de la petición en JSON
+      // Se establece la ID del usuario el en cuerpo
       const body = await c.req.json();
       body.user_id = user._id;
 
+      // Se crea la review y se guarda la respuesta
       const review = await Review.create(body);
 
+      // Se comprueba que la review haya sido creada
+      if (!review) {
+        return c.json(
+          {
+            message: "Error creating review"
+          },
+          400)
+      }
+
+      // Se devuelve la review con su recurso (Schema)
       return c.json(
         {
           review: createResourceFromDocument(review, ReviewResourceSchema),

@@ -61,6 +61,7 @@ export default (app: OpenAPIHono) => {
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
 
+      // Se comprobará si el usuario ha introducido una contraseña para saber si se desea cambiar. En caso de existir, pero estar vacía, se dará un error
       if (body.password !== undefined) {
         if (body.password === "")
           return c.json(
@@ -73,6 +74,7 @@ export default (app: OpenAPIHono) => {
         body.password = await Bun.password.hash(body.password);
       }
 
+      // Se buscará el usuario por su ID y se actualizará, añadiendo "new: true" para que se devuelva el usuario actualizado
       const user = await User.findOneAndUpdate(
         {
           _id: c.req.param("id"),
@@ -83,6 +85,7 @@ export default (app: OpenAPIHono) => {
         }
       );
 
+      // En caso de no haberse encontrado dicho usuario, "user" estará vacío, por lo que se devolverá un código 404
       if (!user)
         return c.json(
           {
@@ -91,6 +94,7 @@ export default (app: OpenAPIHono) => {
           404
         );
 
+      // En caso de haberse encontrado, se devolverá el usuario usando su recurso sin contraseña
       return c.json(
         {
           user: createResourceFromDocument(user, UserResourceSchema),
