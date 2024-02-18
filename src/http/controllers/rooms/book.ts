@@ -98,7 +98,7 @@ export default (app: OpenAPIHono) => {
       if (user == null) {
         return c.json(
           {
-            message: "Params not provided"
+            message: "Params not provided",
           },
           400
         );
@@ -146,22 +146,25 @@ export default (app: OpenAPIHono) => {
       if (!booking) {
         return c.json(
           {
-            message: "Error creating the booking"
+            message: "Error creating the booking",
           },
           400
-        )
+        );
       }
       // Se guarda el rango de fechas reservado en la habitación
       room.availability.push({
         check_in_date: body.start,
         check_out_date: body.end,
+        booking_id: booking._id,
       });
       await room.save();
       // Se devuelve la reserva creada
-      return c.json({
-        booking,
-      },
-        200);
+      return c.json(
+        {
+          booking,
+        },
+        200
+      );
     }
   );
 };

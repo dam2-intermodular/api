@@ -32,7 +32,13 @@ const roomSchema = new Schema({
   },
 
   availability: {
-    type: [{ check_in_date: Date, check_out_date: Date }],
+    type: [
+      {
+        check_in_date: Date,
+        check_out_date: Date,
+        booking_id: Schema.Types.ObjectId,
+      },
+    ],
     default: [],
   },
 
