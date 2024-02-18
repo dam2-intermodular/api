@@ -30,15 +30,11 @@ export default (app: OpenAPIHono) => {
             "application/json": {
               schema: z.object({
                 room: z.object({
-                  _id: z.string(),
                   room_number: z.number(),
                   beds: z.number(),
                   price_per_night: z.number(),
-                  image_path: z.string(),
                   description: z.string(),
                   services: z.array(z.string()),
-                  createdAt: z.string(),
-                  updatedAt: z.string(),
                 })
               }),
             },
