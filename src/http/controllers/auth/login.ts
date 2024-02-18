@@ -42,8 +42,15 @@ export default (app: OpenAPIHono) => {
           content: {
             "application/json": {
               schema: z.object({
-                email: z.string().email(),
-                password: z.string().min(8).max(255),
+                email: z
+                  .string()
+                  .email()
+                  .openapi({ example: "admin@admin.com" }),
+                password: z
+                  .string()
+                  .min(8)
+                  .max(255)
+                  .openapi({ example: "12345678" }),
               }),
             },
           },

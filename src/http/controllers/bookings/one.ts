@@ -16,6 +16,16 @@ export default (app: OpenAPIHono) => {
     createRoute({
       method: "get",
       path: "/booking/:id",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
+      request: {
+        params: z.object({
+          id: z.string(),
+        }),
+      },
       responses: {
         200: {
           description: "Booking details",

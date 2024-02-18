@@ -21,6 +21,11 @@ export default (app: OpenAPIHono) => {
           Bearer: [],
         },
       ],
+      request: {
+        params: z.object({
+          id: z.string(),
+        }),
+      },
       responses: {
         204: {
           description: "User deleted successfully",
@@ -43,9 +48,10 @@ export default (app: OpenAPIHono) => {
 
       // Se recoge el ID de la URL y se comprueba que exista en los parámetros de la URL
       if (!id) {
-        return c.json({
-          message: "No params provided"
-        },
+        return c.json(
+          {
+            message: "No params provided",
+          },
           400
         );
       }

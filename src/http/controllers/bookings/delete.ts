@@ -16,7 +16,17 @@ export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
       method: "delete",
-      path: "/booking/:id",
+      path: "/booking/{id}",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
+      request: {
+        params: z.object({
+          id: z.string(),
+        }),
+      },
       responses: {
         204: {
           description: "Booking deleted successfully",

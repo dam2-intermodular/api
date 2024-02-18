@@ -92,6 +92,9 @@ describe("bookings", () => {
 
     const currentRoom = await Room.findOne({ _id: room._id });
     expect(currentRoom!!.availability.length).toEqual(0);
+
+    const bookings = await Booking.find({});
+    expect(bookings.length).toEqual(0);
   });
 
   test("should list bookings", async () => {
