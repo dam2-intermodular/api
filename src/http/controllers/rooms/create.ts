@@ -66,7 +66,7 @@ export default (app: OpenAPIHono) => {
 
       // Se recoge el cuerpo de la petición y comprueba si el número de
       // habitación es único.
-      if (await isRoomNumberUnique(body.room_number)) {
+      if (!await isRoomNumberUnique(body.room_number)) {
         return c.json(
           {
             error: "Room with this number already exists",
