@@ -71,6 +71,7 @@ export default (app: OpenAPIHono) => {
     }),
     async function (c: Context): Promise<any> {
       const body = await c.req.json();
+      // Primero comprueba que el email y el DNI del usuario enviado por el cuerpo de la petición no existan
       if (await isEmailOrDniUsed(body.email, body.dni)) {
         return c.json(
           {
@@ -80,6 +81,7 @@ export default (app: OpenAPIHono) => {
         );
       }
 
+      // En caso de que no existan, se hasheará su contraseña y guardarán sus datos en un objeto
       const hashedPassword = await Bun.password.hash(body.password);
       const userData = {
         name: body.name,
@@ -87,6 +89,7 @@ export default (app: OpenAPIHono) => {
         dni: body.dni,
       };
 
+      // Se creará el usuario en la base de datos usando su Schema
       const user = await User.create({
         email: body.email,
         password: hashedPassword,
@@ -94,6 +97,7 @@ export default (app: OpenAPIHono) => {
         role: UserRole.CLIENT,
       });
 
+      // Y se devolverá usando un recurso, que no tendrá la contraseña
       return c.json(
         {
           user: createResourceFromDocument(user, UserResourceSchema),

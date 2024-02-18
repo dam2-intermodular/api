@@ -3,6 +3,9 @@ import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { Room } from "../../../models/room";
 
+// Autor: Luis Miguel Palos Alhama
+//
+// Esta ruta recibe un número de una habitación para hacer una query a esa misma habitación, devolviendo así dicha habitación
 export default (app: OpenAPIHono) => {
   app.openapi(
     createRoute({
@@ -44,6 +47,7 @@ export default (app: OpenAPIHono) => {
     async function (c: Context): Promise<any> {
       const roomNumber = c.req.param("room_number");
 
+      // Se recoge el número de habitación de la URL y se comprueba que no esté vacía; es decir, que se haya enviado dicho número de habitación
       if (!roomNumber) {
         return c.json(
           {
@@ -53,10 +57,12 @@ export default (app: OpenAPIHono) => {
         );
       }
 
+      // Se busca la habitación usando su Schema
       const room = await Room.findOne({
         room_number: roomNumber,
       });
 
+      // Se comprueba que se haya encontrado
       if (!room) {
         return c.json(
           {
@@ -66,6 +72,7 @@ export default (app: OpenAPIHono) => {
         );
       }
 
+      // Se devuelve la habitación
       return c.json(
         {
           room,

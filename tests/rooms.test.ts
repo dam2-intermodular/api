@@ -3,6 +3,7 @@ import { createApp } from "../src/index";
 import { login, request } from "./helpers";
 import { Room } from "../src/models/room";
 import { UserRole } from "../src/models/user";
+import { faker } from "@faker-js/faker";
 
 const app = await createApp();
 
@@ -11,11 +12,12 @@ beforeEach(async () => {
 });
 
 describe("rooms.create", () => {
-  test("should create room", async () => {
+  test("should create room (may fail if randomly generated room_number already exists)", async () => {
     const loginPayload = await login(app, UserRole.ADMIN);
+    const roomNum = faker.number.int({ min: 1, max: 100 });
 
     const response = await request(app, loginPayload.token).post("/rooms", {
-      room_number: 3,
+      room_number: roomNum,
       beds: 2,
       price_per_night: 120,
       image_path: "img",
@@ -27,7 +29,7 @@ describe("rooms.create", () => {
     expect(await response.json()).toEqual({
       room: {
         _id: expect.any(String),
-        room_number: 3,
+        room_number: roomNum,
         beds: 2,
         price_per_night: 120,
         image_path: null,
