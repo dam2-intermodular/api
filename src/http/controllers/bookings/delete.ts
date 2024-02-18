@@ -37,9 +37,7 @@ export default (app: OpenAPIHono) => {
     async function (c: Context): Promise<any> {
       // Se busca la reserva por la ID de los parámetros
       // De la URL y la elimina
-      const book = await Booking.findByIdAndDelete({
-        _id: c.req.param("id"),
-      });
+      const book = await Booking.findByIdAndDelete(c.req.param("id"));
       // Se comprueba si ha funcionado
       if (!book) {
         return c.json(
@@ -50,9 +48,7 @@ export default (app: OpenAPIHono) => {
         );
       }
 
-      const room = await Room.findById({
-        _id: book.room_id,
-      });
+      const room = await Room.findById(book.room_id);
 
       if (!room) {
         return c.json(
@@ -78,4 +74,3 @@ export default (app: OpenAPIHono) => {
     }
   );
 };
-
