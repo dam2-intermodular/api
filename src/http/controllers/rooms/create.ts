@@ -3,12 +3,27 @@ import { z } from "zod";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { RoomResourceSchema } from "../../../resources/room";
 import { Room } from "../../../models/room";
+import { createResourceFromDocument } from "../../../mongo";
+import { Room } from "../../../models/room";
+import authMiddleware from "../../middlewares/auth";
+import adminMiddleware from "../../middlewares/employee";
 
+// Autor: Lucía Lozano López
+//
+// Esta ruta creará una habitación cuyo número de habitación sea único
+// Se hará uso de los middlewares de auth y admin
 export default (app: OpenAPIHono) => {
+  app.use("/rooms", authMiddleware);
+  app.use("/rooms", adminMiddleware);
   app.openapi(
     createRoute({
       method: "post",
-      path: "/room",
+      path: "/rooms",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         body: {
           content: {
@@ -54,45 +69,51 @@ export default (app: OpenAPIHono) => {
       },
     }),
 
+    async function (c: Context): Promise<any> {
+      const body = await c.req.json();
 
-    async function createRoom(c: Context): Promise<any> {
-      try {
-        const body = await c.req.json();
-
-        const roomExists = await isRoomExists(body.id);
-        if (roomExists) {
-          return c.json(
-            {
-              error: "Room with this id already exists",
-            },
-            409
-          );
-        }
-
-        const room = await Room.create(body);
-
-        return c.json({
-          room,
-          message: "Room created successfully"
-        }, 201);
-      } catch (error) {
+      // Se recoge el cuerpo de la petición y comprueba si el número de
+      // habitación es único.
+      if (!await isRoomNumberUnique(body.room_number)) {
         return c.json(
           {
-            message: "Room with this id already exists",
+            error: "Room with this number already exists",
           },
           409
         );
-      };
-
-      async function isRoomExists(id: string): Promise<boolean> {
-        try {
-          const room = await Room.findById(id);
-          return !!room;
-        } catch (error) {
-          console.error("Error: ", error);
-          return false;
-        }
       }
+
+      // Se crea la habitación y se guarda el resultado
+      const room = await Room.create({
+        room_number: body.room_number,
+        beds: body.beds,
+        price_per_night: body.price_per_night,
+        description: body.description,
+        services: body.services,
+      });
+
+      // Se comprueba que se haya creado correctamente
+      if (!room) {
+        return c.json(
+          {
+            message: "Error creating room"
+          },
+          400)
+      }
+
+      // Se devuelve la habitación creada como su recurso
+      return c.json(
+        {
+          room: createResourceFromDocument(room, RoomResourceSchema),
+        },
+        201
+      );
     }
-  )
+  );
 };
+
+// Comprueba que el número de habitación sea único
+async function isRoomNumberUnique(number: Number): Promise<boolean> {
+  const exists = await Room.exists({ room_number: number });
+  return exists == null;
+}

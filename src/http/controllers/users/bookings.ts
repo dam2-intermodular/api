@@ -6,12 +6,24 @@ import authMiddleware from "../../middlewares/auth";
 import { Booking } from "../../../models/booking";
 import { BookingResourceSchema } from "../../../resources/booking";
 
+// Autor: Victor Garcia
+//
+// Esta ruta permite listar las reservas que ha hecho un usuario.
+// Esta protegida por autenticación.
+// Devuelve un 200 y un array de reservas.
+// Si no hay reservas, devuelve un array vacío.
+// Soporta la paginación. Por defecto, devuelve 10 reservas por página. Y puedes especificar la página con el parámetro "page".
 export default (app: OpenAPIHono) => {
   app.use("/users/bookings", authMiddleware);
   app.openapi(
     createRoute({
       method: "get",
       path: "/users/bookings",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       request: {
         query: z.object({
           per_page: z.string().optional(),

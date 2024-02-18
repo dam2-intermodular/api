@@ -2,12 +2,22 @@ import { Context } from "hono";
 import authMiddleware from "../../middlewares/auth";
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 
+// Autor: Víctor García Fernández
+//
+// Esta ruta es para obtener la información del usuario logueado.
+// Se utiliza el middleware de autenticación para verificar que el usuario esté logueado.
+// Se retorna la información del usuario injectada por el middleware.
 export default (app: OpenAPIHono) => {
   app.use("/me", authMiddleware);
   app.openapi(
     createRoute({
       method: "get",
       path: "/me",
+      security: [
+        {
+          Bearer: [],
+        },
+      ],
       responses: {
         200: {
           description: "Get logged user info",
@@ -28,6 +38,7 @@ export default (app: OpenAPIHono) => {
       },
     }),
     (c: Context) => {
+      // Devuelve el usuario guardado al loguearse
       return c.json({
         user: c.get("user"),
       });

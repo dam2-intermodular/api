@@ -134,7 +134,7 @@ describe("users.delete", () => {
 
     await (
       await request(app, adminToken).delete(`/users/${user._id}`)
-    ).expectStatusToBe(200);
+    ).expectStatusToBe(204);
   });
 });
 
