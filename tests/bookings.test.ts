@@ -14,7 +14,7 @@ beforeEach(async () => {
   await Room.deleteMany({}).exec();
 });
 
-describe("bookings.create", () => {
+describe("bookings", () => {
   test("should update booking", async () => {
     const loginPayload = await login(app);
 
@@ -60,5 +60,37 @@ describe("bookings.create", () => {
     expect(currentRoom!!.availability[0].check_out_date).not.toEqual(
       oldBook.check_out_date
     );
+  });
+
+  test("should delete booking", async () => {
+    const loginPayload = await login(app);
+
+    const room = await Room.create({
+      room_number: 1,
+      beds: 2,
+      price_per_night: 100,
+      image_path: "image",
+      description: "description",
+      services: ["wifi"],
+    });
+
+    const response = await request(app, loginPayload.token).post(
+      `/rooms/${room._id}/book`,
+      {
+        start: new Date(),
+        end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      }
+    );
+    expect(response.status).toEqual(200);
+
+    const body = await response.json();
+
+    const request1 = await request(app, loginPayload.token).delete(
+      `/booking/${body.booking._id}`
+    );
+    expect(request1.status).toEqual(204);
+
+    const currentRoom = await Room.findOne({ _id: room._id });
+    expect(currentRoom!!.availability.length).toEqual(0);
   });
 });
