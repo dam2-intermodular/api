@@ -6,6 +6,10 @@ import { Context } from "hono";
 import { Booking } from "../../../models/booking";
 import { createResourceFromDocument } from "../../../mongo";
 
+// Autor: Víctor García Fernández
+//
+// Esta ruta lista las reservas
+// Soporta paginado
 export default (app: OpenAPIHono) => {
   app.use("/booking/:id", authMiddleware);
   app.use("/booking/:id", employeeMiddleware);
@@ -62,7 +66,7 @@ export default (app: OpenAPIHono) => {
         .exec();
 
       // Se mapea la respuesta y se devuelve con
-      // el schema de recurso para reviews
+      // el schema de recurso para bookings
       return c.json(
         {
           bookings: bookings.map((booking) =>
