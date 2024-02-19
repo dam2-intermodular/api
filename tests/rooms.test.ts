@@ -113,6 +113,17 @@ describe("rooms.list", () => {
 });
 
 describe("rooms.book", () => {
+  test("can't book a room if not logged in", async () => {
+    const response = await request(app).post(
+      `/rooms/65d3b427a8b4aba2c886b38d/book`,
+      {
+        start: new Date(),
+        end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      }
+    );
+    expect(response.status).toEqual(401);
+  });
+
   test("should book a room", async () => {
     const loginPayload = await login(app);
 
